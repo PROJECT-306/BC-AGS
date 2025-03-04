@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Default - this is reviewing branch
+    | Authentication Default - this is reviewing branches
     |--------------------------------------------------------------------------
     |
     | This option defines the default authentication "guard" and password
