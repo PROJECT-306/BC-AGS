@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Defaults - this is testing branch
+    | Authentication Defaults - this is testing branch D
     |--------------------------------------------------------------------------
     |
     | This option defines the default authentication "guard" and password
