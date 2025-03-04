@@ -5,7 +5,6 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults - this is testing branch
-    BAYOT SI AJ
     |--------------------------------------------------------------------------
     |
     | This option defines the default authentication "guard" and password
