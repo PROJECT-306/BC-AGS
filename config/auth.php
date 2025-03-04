@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Authentication Defaults
+    | Authentication Defaults - this is production branch
     |--------------------------------------------------------------------------
     |
     | This option defines the default authentication "guard" and password
