@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,7 +22,8 @@ class User extends Authenticatable
         'surname',
         'email',
         'password',
-        'role',  // Add the role field to the fillable attributes
+        'role',  
+        'department_id', // Include department_id in fillable
     ];
 
     /**
@@ -37,7 +37,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -57,5 +57,15 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return $this->firstname . ' ' . ($this->middlename ? $this->middlename . ' ' : '') . $this->surname;
+    }
+
+    /**
+     * Relationship: A User belongs to a Department.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
 }

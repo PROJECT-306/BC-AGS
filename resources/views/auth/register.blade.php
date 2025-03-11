@@ -47,7 +47,8 @@
         <!-- Role Selection -->
         <div class="mt-4">
             <x-input-label for="role" :value="__('Role')" />
-            <select id="role" name="role" class="block mt-1 w-full" required>
+            <select id="role" name="role" class="block mt-1 w-full" required onchange="toggleDepartment()">
+                <option value="" disabled {{ old('role') === null ? 'selected' : '' }}>Select a Role</option>
                 <option value="0" {{ old('role') == 0 ? 'selected' : '' }}>Instructor</option>
                 <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>Chairperson</option>
                 <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>Dean</option>
@@ -55,6 +56,20 @@
                 <option value="4" {{ old('role') == 4 ? 'selected' : '' }}>Super Admin</option>
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
+        <!-- Department Selection (Visible only for roles 0, 1, 2) -->
+        <div id="department-section" class="mt-4" style="display: none;">
+            <x-input-label for="department_id" :value="__('Department')" />
+            <select id="department_id" name="department_id" class="block mt-1 w-full">
+                <option value="" disabled selected>Select a Department</option>
+                @foreach ($departments as $department)
+                    <option value="{{ $department->department_id }}" {{ old('department_id') == $department->department_id ? 'selected' : '' }}>
+                        {{ $department->department_name }}
+                    </option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -67,4 +82,23 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        function toggleDepartment() {
+            var role = document.getElementById('role').value;
+            var departmentSection = document.getElementById('department-section');
+
+            // Show department only for roles 0 (Instructor), 1 (Chairperson), and 2 (Dean)
+            if (role === "0" || role === "1" || role === "2") {
+                departmentSection.style.display = 'block';
+            } else {
+                departmentSection.style.display = 'none';
+            }
+        }
+
+        // Ensure correct visibility on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            toggleDepartment();
+        });
+    </script>
 </x-guest-layout>
