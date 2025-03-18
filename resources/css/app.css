@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add any custom styles below */
+
+.dashboard-content {
+    max-width: 1200px; /* Set a maximum width */
+    width: 100%; /* Full width */
+    margin: 0 auto; /* Center the content */
+}

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->enum('role', [4, 3, 0, 1, 2])  // Adding the user roles
-                ->default(0);  // Default role is Instructor (0)
+            $table->enum('role', ['superadmin', 'admin', 'chairperson', 'instructor'])  // Updated roles
+                ->default('instructor');  // Default role is Instructor
             $table->timestamps();
         });
 

@@ -68,4 +68,25 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
+
+    /**
+     * Get the role text for the user.
+     *
+     * @return string
+     */
+    public function roleText(): string
+    {
+        switch ($this->role) {
+            case 'instructor':
+                return 'Instructor';
+            case 'chairperson':
+                return 'Chairperson';
+            case 'admin':
+                return 'Admin';
+            case 'superadmin':
+                return 'Super Admin';
+            default:
+                return 'Role not assigned';
+        }
+    }
 }

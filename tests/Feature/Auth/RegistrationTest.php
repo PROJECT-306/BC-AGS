@@ -19,10 +19,31 @@ class RegistrationTest extends TestCase
     public function test_new_users_can_register(): void
     {
         $response = $this->post('/register', [
-            'name' => 'Test User',
+            'firstname' => 'Test',
+            'middlename' => 'User',
+            'surname' => 'Example',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'role' => 'instructor', // Updated role
+            'department_id' => 1, // Assuming department_id exists
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_new_super_admin_can_register(): void
+    {
+        $response = $this->post('/register', [
+            'firstname' => 'Super',
+            'middlename' => 'Admin',
+            'surname' => 'User',
+            'email' => 'superadmin@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'superadmin', // Updated role
+            'department_id' => 1, // Ensure this ID exists in the departments table
         ]);
 
         $this->assertAuthenticated();
