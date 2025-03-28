@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserRole;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'user_role' => UserRole::all(),
         ]);
     }
 
@@ -26,13 +28,28 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = $request->user();
+
+        $data = $request->validate(
+            [
+                "first_name" => ["required", "string", "max:255"],
+                "middle_name" => ["required", "string", "max:255"],
+                "last_name" => ["required", "string", "max:255"],
+                "email" => ["required", "email", "string", "max:255", "unique:users,email,".$user->id],
+            ]
+        );
+
+        $data["user_role_id"] = $request->user_role_id ?? $user->user_role_id;
+
+        $user->update($data);
+
+        if($user->isDirty("email"))
+        {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -42,7 +59,7 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
+        $request->validateWithBag(  'userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
 
