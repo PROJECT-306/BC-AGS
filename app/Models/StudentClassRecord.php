@@ -9,10 +9,32 @@ class StudentClassRecord extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'subject_id', 'quiz_score', 'exam_score', 'ocr_score', 'final_score'];
+    protected $table = 'student_class_records';
+    protected $primaryKey = 'student_class_record_id';
 
-    public function computeFinalScore()
+    protected $fillable = 
+    [
+        'student_id',
+        'subject_id',
+        'grading_period_id',
+        'quizzes',
+        'ocr',
+        'exams',
+        'computed_grade',
+    ];
+
+    public function student()
     {
-        return ($this->quiz_score * 0.4) + ($this->exam_score * 0.4) + ($this->ocr_score * 0.2);
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    public function gradingPeriod()
+    {
+        return $this->belongsTo(GradingPeriod::class, 'grading_period_id');
     }
 }

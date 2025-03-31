@@ -9,10 +9,26 @@ class StudentClassWork extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'subject_id', 'assessment_type_id', 'raw_score', 'total_items', 'computed_score'];
+    protected $table = 'student_class_works';
+    protected $primaryKey = 'student_class_work_id';
 
-    public function computeScore()
+    protected $fillable = 
+    [
+        'student_id',
+        'class_work_id',
+        'raw_score',
+        'total_items',
+        'computed_score',
+    ];
+
+    public function student()
     {
-        return ($this->raw_score / $this->total_items) * 50 + 50;
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    
+    public function classWork()
+    {
+        return $this->belongsTo(ClassWork::class, 'class_work_id');
     }
 }

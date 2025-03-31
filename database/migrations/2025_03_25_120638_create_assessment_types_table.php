@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('assessment_types', function (Blueprint $table) {
             $table->id('assessment_type_id');
-            $table->string('assessment_name')->unique(); // Quizzes, Exams, OCR
-            $table->decimal('weight', 5, 2); // 40%, 40%, 20%
+            $table->string('assessment_name');
+            $table->decimal('weight', 5, 2);
             $table->timestamps();
         });
     }

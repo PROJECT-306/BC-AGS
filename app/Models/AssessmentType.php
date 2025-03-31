@@ -9,10 +9,13 @@ class AssessmentType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'percentage'];
+    protected $table = 'assessment_types';
+    protected $primaryKey = 'assessment_type_id';
+    public $timestamps = true;
 
-    public function classWorks()
-    {
-        return $this->hasMany(ClassWork::class);
-    }
+    protected $fillable = 
+    [
+        'assessment_name',
+        'weight',
+    ];
 }

@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\
+{
+    Student,
+    Subject,
+};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,10 +14,25 @@ class FinalGrade extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'subject_id', 'prelim', 'midterm', 'pre_final', 'final', 'final_grade'];
 
-    public function computeFinalGrade()
+    protected $table = "final_grades";
+    protected $primaryKey = "final_grade_id";
+    public $timestamps = true;
+
+    protected $fillable = 
+    [
+        'student_id',
+        'subject_id',
+        'final_grade',
+    ];
+
+    public function student()
     {
-        return ($this->prelim + $this->midterm + $this->pre_final + $this->final) / 4;
+        return $this->belongsTo(Student::class, "student_id");
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, "subject_id");
     }
 }
