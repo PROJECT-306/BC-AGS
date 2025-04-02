@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('grading_periods', function (Blueprint $table) {
             $table->id('grading_period_id');
-            $table->string('grading_period_name')->unique(); // Prelim, Midterm, Pre-final, Final
+            $table->string('grading_period_name');
             $table->timestamps();
         });
     }

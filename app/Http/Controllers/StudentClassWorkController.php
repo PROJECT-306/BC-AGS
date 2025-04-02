@@ -9,7 +9,9 @@ class StudentClassWorkController extends Controller
 {
     public function index()
     {
-        return response()->json(StudentClassWork::all());
+        $studentClassWork = StudentClassWork::all();
+
+        return view("main.view.view_student_class_work", compact("studentClassWork"));
     }
 
     public function store(Request $request)

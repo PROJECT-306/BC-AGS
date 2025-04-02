@@ -9,17 +9,24 @@ class GradingPeriodController extends Controller
 {
     public function index()
     {
-        return response()->json(GradingPeriod::all());
+        $gradingPeriods = GradingPeriod::all();
+
+        return view("main.view.view_grading_period", compact("gradingPeriods"));
+    }
+
+    public function create()
+    {
+        return view("main.add.add_grading_period");
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:grading_periods,name',
+            'grading_period_name' => 'required|string|unique:grading_periods,grading_period_name',
         ]);
 
-        $gradingPeriod = GradingPeriod::create($request->only('name'));
-        return response()->json($gradingPeriod, 201);
+        GradingPeriod::create($request->all());
+        return redirect()->route('grading-periods.index')->with('success', 'Grading Period Added');
     }
 
     public function show($id)
@@ -27,16 +34,28 @@ class GradingPeriodController extends Controller
         return response()->json(GradingPeriod::findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $gradingPeriods = GradingPeriod::findOrFail($id);
+
+        return view("main.edit.edit_grading_period", compact("gradingPeriods"));
+    }
+
     public function update(Request $request, $id)
     {
-        $gradingPeriod = GradingPeriod::findOrFail($id);
-        $gradingPeriod->update($request->only('name'));
-        return response()->json($gradingPeriod);
+        $request->validate([
+            'grading_period_name' => 'required|string|unique:grading_periods,grading_period_name',
+        ]);
+
+        $gradingPeriods = GradingPeriod::findOrFail($id);
+        $gradingPeriods->update($request->all());
+
+        return redirect()->route('grading-periods.index')->with('success', 'Grading Period Updated');
     }
 
     public function destroy($id)
     {
         GradingPeriod::destroy($id);
-        return response()->json(['message' => 'Grading Period deleted']);
+        return redirect()->route('grading-periods.index')->with('success', 'Grading Period Deleted');
     }
 }

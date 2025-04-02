@@ -9,14 +9,28 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        return response()->json(Department::all());
+        $departments = Department::with(
+            [
+                "courses"
+            ]
+        )->get();
+
+        return view("main.view.view_department", compact("departments"));
+    }
+
+    public function create()
+    {
+        return view("main.add.add_department");
     }
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|string|unique:departments,name']);
-        $department = Department::create($request->only('name'));
-        return response()->json($department, 201);
+        $request->validate([
+            'department_name' => 'required|string|unique:departments,department_name'
+        ]);
+
+        Department::create($request->all());
+        return redirect()->route("departments.index")->with('success', 'Department Added');
     }
 
     public function show($id)
@@ -24,16 +38,28 @@ class DepartmentController extends Controller
         return response()->json(Department::findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $departments = Department::findOrFail($id);
+
+        return view("main.edit.edit_department", compact("departments"));
+    }
+
     public function update(Request $request, $id)
     {
-        $department = Department::findOrFail($id);
-        $department->update($request->only('name'));
-        return response()->json($department);
+        $request->validate([
+            'department_name' => 'required|string|unique:departments,department_name'
+        ]);
+
+        $departments = Department::findOrFail($id);
+        $departments->update($request->all());
+
+        return redirect()->route("departments.index")->with('success', 'Department Updated');
     }
 
     public function destroy($id)
     {
         Department::destroy($id);
-        return response()->json(['message' => 'Department deleted']);
+        return redirect()->route("departments.index")->with('success', 'Department Added');
     }
 }

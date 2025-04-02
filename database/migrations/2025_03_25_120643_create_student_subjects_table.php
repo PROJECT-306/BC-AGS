@@ -12,11 +12,9 @@ return new class extends Migration
             $table->id('student_subject_id');
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('instructor_id')->nullable();
             $table->unsignedBigInteger('semester_id');
             $table->foreign('student_id')->references('student_id')->on('students')->onDelete('cascade');
             $table->foreign('subject_id')->references('subject_id')->on('subjects')->onDelete('cascade');
-            $table->foreign('instructor_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('semester_id')->references('semester_id')->on('semesters')->onDelete('cascade');
             $table->timestamps();
         });

@@ -2,25 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
+use App\Models\
+{
+    Course,
+    Department,
+};
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
     public function index()
     {
-        return response()->json(Course::with('department')->get());
+        $courses = Course::with(
+            [
+                "department"
+            ]
+        )->get();
+
+        return view("main.view.view_course", compact("courses"));
+    }
+
+    public function create()
+    {
+        $departments = Department::all();
+
+        return view("main.add.add_course", compact("departments"));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:courses,name',
-            'department_id' => 'required|exists:departments,id',
+            'course_name' => 'required|string|unique:courses,course_name',
+            'department_id' => 'required|exists:departments,department_id',
         ]);
 
-        $course = Course::create($request->only('name', 'department_id'));
-        return response()->json($course, 201);
+        Course::create($request->all());
+        return redirect()->route('courses.index')->with('success', "Course Added");
     }
 
     public function show($id)
@@ -28,16 +45,30 @@ class CourseController extends Controller
         return response()->json(Course::with('department')->findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $courses = Course::findOrFail($id);
+        $departments = Department::all();
+
+        return view("main.edit.edit_course", compact("courses", "departments"));
+    }
+
     public function update(Request $request, $id)
     {
-        $course = Course::findOrFail($id);
-        $course->update($request->only('name', 'department_id'));
-        return response()->json($course);
+        $request->validate([
+            'course_name' => 'required|string|unique:courses,course_name',
+            'department_id' => 'required|exists:departments,department_id',
+        ]);
+
+        $courses = Course::findOrFail($id);
+        $courses->update($request->all());
+
+        return redirect()->route('courses.index')->with('success', "Course Updated");
     }
 
     public function destroy($id)
     {
         Course::destroy($id);
-        return response()->json(['message' => 'Course deleted']);
+        return redirect()->route('courses.index')->with('success', "Course Deleted");
     }
 }

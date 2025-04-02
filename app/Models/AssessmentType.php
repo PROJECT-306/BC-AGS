@@ -18,4 +18,9 @@ class AssessmentType extends Model
         'assessment_name',
         'weight',
     ];
+
+    protected $casts = 
+    [
+        'weight' => 'decimal:2',
+    ];
 }

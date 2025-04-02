@@ -2,45 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\
+{
+    Student,
+    Course,
+};
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
     public function index()
     {
-        return response()->json(Student::with('course')->get());
+        $students = Student::with(
+            [
+                "course"
+            ]
+        )->get();
+
+        return view("main.view.view_student", compact("students"));
+    }
+
+    public function create()
+    {
+        $courses = Course::all();
+
+        return view("main.add.add_student", compact("courses"));
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'student_id' => 'required|string|unique:students,student_id',
-            'first_name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:students,email',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+{
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'birthdate' => 'required|date',
+        'gender' => 'required|in:Male,Female,Other',
+        'course_id' => 'required|exists:courses,course_id',
+    ]);
 
-        $student = Student::create($request->all());
-        return response()->json($student, 201);
-    }
+    $lastStudent = Student::orderBy('student_number', 'desc')->first();
+    $nextStudentNumber = $lastStudent ? $lastStudent->student_number + 1 : 1;
+
+    Student::create([
+        'student_number' => $nextStudentNumber,
+        'first_name' => $request->first_name,
+        'last_name' => $request->last_name,
+        'birthdate' => $request->birthdate,
+        'gender' => $request->gender,
+        'course_id' => $request->course_id,
+    ]);
+
+    return redirect()->route('students.index')->with('success', 'Student Added');
+}
 
     public function show($id)
     {
         return response()->json(Student::with('course')->findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $students = Student::findOrFail($id);
+        $courses = Course::all();
+
+        return view("main.edit.edit_student", compact("students", "courses"));
+    }
+
     public function update(Request $request, $id)
     {
-        $student = Student::findOrFail($id);
-        $student->update($request->all());
-        return response()->json($student);
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'gender' => 'required|in:Male,Female,Other',
+            'course_id' => 'required|exists:courses,course_id',
+        ]);
+
+        $students = Student::findOrFail($id);
+        $students->update($request->all());
+
+        return redirect()->route('students.index')->with('success', 'Student Updated');
     }
 
     public function destroy($id)
     {
         Student::destroy($id);
-        return response()->json(['message' => 'Student deleted']);
+        return redirect()->route('students.index')->with('success', 'Student Deleted');
     }
 }

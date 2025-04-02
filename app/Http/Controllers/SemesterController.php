@@ -9,7 +9,14 @@ class SemesterController extends Controller
 {
     public function index()
     {
-        return response()->json(Semester::all());
+        $semesters = Semester::all();
+
+        return view("main.view.view_semester", compact("semesters"));
+    }
+
+    public function create()
+    {
+        return view("main.add.add_semester");
     }
 
     public function store(Request $request)
@@ -18,8 +25,8 @@ class SemesterController extends Controller
             'semester_name' => 'required|string|unique:semesters,semester_name',
         ]);
 
-        $semester = Semester::create($request->only('semester_name'));
-        return response()->json($semester, 201);
+        Semester::create($request->all());
+        return redirect()->route('semesters.index')->with('success', 'Semester Added');
     }
 
     public function show($id)
@@ -27,16 +34,28 @@ class SemesterController extends Controller
         return response()->json(Semester::findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $semesters = Semester::findOrFail($id);
+
+        return view("main.edit.edit_semester", compact("semesters"));
+    }
+
     public function update(Request $request, $id)
     {
-        $semester = Semester::findOrFail($id);
-        $semester->update($request->only('semester_name'));
-        return response()->json($semester);
+        $request->validate([
+            'semester_name' => 'required|string|unique:semesters,semester_name',
+        ]);
+
+        $semesters = Semester::findOrFail($id);
+        $semesters->update($request->all());
+
+        return redirect()->route('semesters.index')->with('success', 'Semester Updated');
     }
 
     public function destroy($id)
     {
         Semester::destroy($id);
-        return response()->json(['message' => 'Semester deleted']);
+        return redirect()->route('semesters.index')->with('success', 'Semester Deleted');
     }
 }

@@ -35,7 +35,7 @@ class ClassWork extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, "id");
+        return $this->belongsTo(User::class, "instructor_id");
     }
 
     public function assessmentType()

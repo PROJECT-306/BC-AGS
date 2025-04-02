@@ -18,11 +18,6 @@ class Course extends Model
         "department_id"
     ];
 
-    public function subjects()
-    {
-        return $this->hasMany(Subject::class, "course_id");
-    }
-
     public function department()
     {
         return $this->belongsTo(Department::class, "department_id");

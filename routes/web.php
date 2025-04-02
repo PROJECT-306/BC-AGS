@@ -17,7 +17,9 @@ use App\Http\Controllers\
     StudentSubjectController,
     SubjectController,
     UserController,
+    UserRoleController,
 };
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,23 +36,29 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Update accordingly when adding a new table
+    //Route::resources automatically assigns the commands(index, create, store, show, edit, update, and destroy)
     Route::resources(
         [
-            "users"                => UserController::class,
-            "students"             => StudentController::class,
-            "departments"          => DepartmentController::class,
-            "courses"              => CourseController::class,
-            "semesters"            => SemesterController::class,
-            "subjects"             => SubjectController::class,
-            "student-subjects"     => StudentSubjectController::class,
-            "student-class-records"=> StudentClassRecordController::class,
-            "student-class-works"  => StudentClassWorkController::class,
-            "grading-periods"      => GradingPeriodController::class,
-            "final-grades"         => FinalGradeController::class,
             "assessment-types"     => AssessmentTypeController::class,
             "class-works"          => ClassWorkController::class,
+            "courses"              => CourseController::class,
+            "departments"          => DepartmentController::class,
+            "final-grades"         => FinalGradeController::class,
+            "grading-periods"      => GradingPeriodController::class,
+            "semesters"            => SemesterController::class,
+            "student-class-records"=> StudentClassRecordController::class,
+            "student-class-works"  => StudentClassWorkController::class,
+            "students"             => StudentController::class,
+            "student-subjects"     => StudentSubjectController::class,
+            "subjects"             => SubjectController::class,
+            "users"                => UserController::class,
+            "user-roles"           => UserRoleController::class,
         ]
     );
+
+    //Using a Custom Function in the controller outside the range of the resources function must be put down here
+    //Organize Accordingly
 });
 
 require __DIR__.'/auth.php';

@@ -11,6 +11,7 @@ class GradingPeriod extends Model
 
     protected $table = 'grading_periods'; 
     protected $primaryKey = 'grading_period_id';
+    public $timestamps = true;
 
     protected $fillable = 
     [

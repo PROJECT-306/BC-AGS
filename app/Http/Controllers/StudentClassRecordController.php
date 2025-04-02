@@ -9,7 +9,9 @@ class StudentClassRecordController extends Controller
 {
     public function index()
     {
-        return response()->json(StudentClassRecord::all());
+        $studentClassRecord = StudentClassRecord::all();
+
+        return view("main.view.view_student_class_record", compact("studentClassRecord"));
     }
 
     public function store(Request $request)

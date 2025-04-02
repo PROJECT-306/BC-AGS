@@ -9,7 +9,9 @@ class FinalGradeController extends Controller
 {
     public function index()
     {
-        return response()->json(FinalGrade::all());
+        $finalGrade = FinalGrade::all();
+
+        return view("main.view.view_final_grade", compact("finalGrade"));
     }
 
     public function store(Request $request)

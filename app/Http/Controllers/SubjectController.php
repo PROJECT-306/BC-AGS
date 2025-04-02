@@ -2,25 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subject;
+use App\Models\
+{
+    Subject,
+    Course,
+};
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
     public function index()
     {
-        return response()->json(Subject::with('course')->get());
+        $subjects = Subject::with(
+            [
+                "course"
+            ]
+        )->get();
+
+        return view("main.view.view_subjects", compact("subjects"));
+    }
+
+    public function create()
+    {
+        $courses = Course::all();
+
+        return view("main.add.add_subjects", compact("courses"));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:subjects,name',
-            'course_id' => 'required|exists:courses,id',
+            'subject_name' => 'required|string|unique:subjects,subject_name',
+            'course_id' => 'required|exists:courses,course_id',
         ]);
 
-        $subject = Subject::create($request->only('name', 'course_id'));
-        return response()->json($subject, 201);
+        Subject::create($request->all());
+        return redirect()->route('subjects.index',)->with('success', 'Subject Added');
     }
 
     public function show($id)
@@ -28,16 +45,30 @@ class SubjectController extends Controller
         return response()->json(Subject::with('course')->findOrFail($id));
     }
 
+    public function edit($id)
+    {
+        $subjects = Subject::findOrFail($id);
+        $courses = Course::all();
+
+        return view("main.edit.edit_subjects", compact("subjects", "courses"));
+    }
+
     public function update(Request $request, $id)
     {
-        $subject = Subject::findOrFail($id);
-        $subject->update($request->only('name', 'course_id'));
-        return response()->json($subject);
+        $request->validate([
+            'subject_name' => 'required|string|unique:subjects,subject_name',
+            'course_id' => 'required|exists:courses,course_id',
+        ]);
+
+        $subjects = Subject::findOrFail($id);
+        $subjects->update($request->all());
+
+        return redirect()->route('subjects.index',)->with('success', 'Subject Updated');
     }
 
     public function destroy($id)
     {
         Subject::destroy($id);
-        return response()->json(['message' => 'Subject deleted']);
+        return redirect()->route('subjects.index',)->with('success', 'Subject Deleted');
     }
 }

@@ -9,35 +9,54 @@ class AssessmentTypeController extends Controller
 {
     public function index()
     {
-        return response()->json(AssessmentType::all());
+        $assessmentTypes = AssessmentType::all();
+
+        return view("main.view.view_assessment_type", compact("assessmentTypes"));
+    }
+
+    public function create()
+    {
+        return view("main.add.add_assessment_type");
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:assessment_types,name',
-            'percentage' => 'required|numeric|min:0|max:100',
+            'assessment_name' => 'required|string|max:255',
+            'weight' => 'required|numeric|between:0.01,100',
         ]);
 
-        $assessmentType = AssessmentType::create($request->all());
-        return response()->json($assessmentType, 201);
+        AssessmentType::create($request->all());
+        return redirect()->route('assessment-types.index')->with('success', 'Assessment Type Added.');
     }
 
     public function show($id)
     {
-        return response()->json(AssessmentType::findOrFail($id));
+        return view('main.view.view_assessment_type_show', compact('assessmentType'));
     }
 
-    public function update(Request $request, $id)
+    public function edit($id)
     {
         $assessmentType = AssessmentType::findOrFail($id);
+
+        return view("main.edit.edit_assessment_type", compact("assessmentType"));
+    }
+
+    public function update(Request $request, AssessmentType $assessmentType)
+    {
+        $request->validate([
+            'assessment_name' => 'required|string|max:255',
+            'weight' => 'required|numeric|between:0.01,100',
+        ]);
+
         $assessmentType->update($request->all());
-        return response()->json($assessmentType);
+
+        return redirect()->route('assessment-types.index')->with('success', 'Assessment Type Updated.');
     }
 
     public function destroy($id)
     {
         AssessmentType::destroy($id);
-        return response()->json(['message' => 'Assessment Type deleted']);
+        return redirect()->route('assessment-types.index')->with('success', 'Assessment Type Deleted.');
     }
 }

@@ -9,7 +9,15 @@ class StudentSubjectController extends Controller
 {
     public function index()
     {
-        return response()->json(StudentSubject::with(['student', 'subject', 'semester'])->get());
+        $studentSubjects = StudentSubject::with(
+            [
+                "student",
+                "subject",
+                "semester",
+            ]
+        )->get();
+
+        return view("main.view.view_student_subjects", compact("studentSubjects"));
     }
 
     public function store(Request $request)
@@ -20,8 +28,8 @@ class StudentSubjectController extends Controller
             'semester_id' => 'required|exists:semesters,id',
         ]);
 
-        $studentSubject = StudentSubject::create($request->all());
-        return response()->json($studentSubject, 201);
+        StudentSubject::create($request->all());
+        return redirect()->route('student-subjects.index')->with('success', 'Student Subject Added');
     }
 
     public function show($id)
@@ -29,16 +37,29 @@ class StudentSubjectController extends Controller
         return response()->json(StudentSubject::with(['student', 'subject', 'semester'])->findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $studentSubject = StudentSubject::findOrFail($id);
-        $studentSubject->update($request->all());
-        return response()->json($studentSubject);
+        $studentSubjects = StudentSubject::findOrFail($id);
+
+        return view("main.edit.edit_student_subjects", compact("studentSubjects"));
+    }
+
+    public function update(Request $request, StudentSubject $studentSubjects)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,student_id',
+            'subject_id' => 'required|exists:subjects,id',
+            'semester_id' => 'required|exists:semesters,id',
+        ]);
+
+        $studentSubjects->update($request->all());
+
+        return redirect()->route('student-subjects.index')->with('success', 'Student Subject Updated');
     }
 
     public function destroy($id)
     {
         StudentSubject::destroy($id);
-        return response()->json(['message' => 'Student-Subject enrollment deleted']);
+        return redirect()->route('student-subjects.index')->with('success', 'Student Subject Deleted');
     }
 }
