@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assessment_types', function (Blueprint $table) {
-            $table->id('assessment_type_id');
-            $table->string('assessment_name');
-            $table->decimal('weight', 5, 2);
+            $table->id('assessment_type_id'); // Primary key
+            $table->string('assessment_name'); // 'Quiz', 'Exam', 'OCR'
+            $table->decimal('weight', 5, 2);   // 40.00, 20.00
             $table->timestamps();
         });
     }

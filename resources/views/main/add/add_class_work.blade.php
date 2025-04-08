@@ -15,8 +15,8 @@
                         @csrf
 
                         <div class="mb-4">
-                            <label class="text-white">Subject</label>
-                            <select name="subject_id" class="w-full p-2 rounded" required>
+                            <label class="text-white" for="subject_id">Subject</label>
+                            <select name="subject_id" id="subject_id" class="w-full p-2 rounded" required>
                                 <option value="" disabled selected>Select a subject</option>
                                 @foreach ($subjects as $subject)
                                     <option value="{{ $subject->subject_id }}">
@@ -27,8 +27,8 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label class="text-white">Instructor</label>
-                            <select name="instructor_id" class="w-full p-2 rounded" required>
+                            <label class="text-white" for="instructor_id">Instructor</label>
+                            <select name="instructor_id" id="instructor_id" class="w-full p-2 rounded" required>
                                 <option value="" disabled selected>Select an instructor</option>
                                 @foreach ($instructors as $instructor)
                                     <option value="{{ $instructor->id }}">
@@ -39,8 +39,8 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label class="text-white">Assessment Type</label>
-                            <select name="assessment_type_id" class="w-full p-2 rounded" required>
+                            <label class="text-white" for="assessment_type_id">Assessment Type</label>
+                            <select name="assessment_type_id" id="assessment_type_id" class="w-full p-2 rounded" required>
                                 <option value="" disabled selected>Select an assessment type</option>
                                 @foreach ($assessmentTypes as $type)
                                     <option value="{{ $type->assessment_type_id }}">
@@ -49,16 +49,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        
 
                         <div class="mb-4">
-                            <label class="text-white">Total Items</label>
-                            <input type="number" name="total_items" class="w-full p-2 rounded" required>
+                            <label class="text-white" for="total_items">Total Items</label>
+                            <input type="number" name="total_items" id="total_items" class="w-full p-2 rounded" required>
                         </div>
 
                         <div class="mb-4">
-                            <label class="text-white">Due Date</label>
-                            <input type="date" name="due_date" class="w-full p-2 rounded" required>
+                            <label class="text-white" for="due_date">Due Date</label>
+                            <input type="date" name="due_date" id="due_date" class="w-full p-2 rounded" required>
                         </div>
 
                         <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">

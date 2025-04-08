@@ -3,48 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudentClassWork;
+use App\Models\ClassWork;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentClassWorkController extends Controller
 {
+    // Display all student class works
     public function index()
     {
-        $studentClassWork = StudentClassWork::all();
-
+        $studentClassWork = StudentClassWork::with(['classWork', 'student'])->get(); // Eager loading for relationships
         return view("main.view.view_student_class_work", compact("studentClassWork"));
     }
 
+    // Store a newly created student class work
     public function store(Request $request)
     {
+        // Validate form data
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
-            'assessment_type_id' => 'required|exists:assessment_types,id',
+            'class_work_id' => 'required|exists:class_works,class_work_id', // Ensure using the correct primary key
+            'assessment_type_id' => 'required|exists:assessment_types,assessment_type_id',
             'raw_score' => 'required|integer|min:0',
             'total_items' => 'required|integer|min:1',
         ]);
-
-        // Compute the score
+    
+        // Compute the score based on the formula
         $computedScore = ($request->raw_score / $request->total_items) * 50 + 50;
-
-        // Create record with computed score
+    
+        // Create the student class work entry
         $studentClassWork = StudentClassWork::create([
             'student_id' => $request->student_id,
-            'subject_id' => $request->subject_id,
+            'class_work_id' => $request->class_work_id,  // Using correct key
             'assessment_type_id' => $request->assessment_type_id,
             'raw_score' => $request->raw_score,
             'total_items' => $request->total_items,
             'computed_score' => $computedScore
         ]);
-
-        return response()->json(['message' => 'Student class work recorded successfully!', 'data' => $studentClassWork], 201);
+    
+        // Redirect to index with a success message
+        return redirect()->route('student-class-works.index')
+                         ->with('success', 'Student class work added successfully!');
     }
-
+    
+    // Show a specific student class work
     public function show($id)
     {
-        return response()->json(StudentClassWork::findOrFail($id));
+        $studentClassWork = StudentClassWork::with(['classWork', 'student'])->findOrFail($id); // Eager loading to get related data
+        return response()->json($studentClassWork);
     }
 
+    // Update a specific student class work
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -54,7 +63,7 @@ class StudentClassWorkController extends Controller
 
         $studentClassWork = StudentClassWork::findOrFail($id);
         
-        // Update fields if provided
+        // Update the fields that are provided
         $studentClassWork->update($request->only(['raw_score', 'total_items']));
 
         // Recalculate score if raw_score or total_items changed
@@ -63,9 +72,13 @@ class StudentClassWorkController extends Controller
             $studentClassWork->save();
         }
 
-        return response()->json(['message' => 'Student class work updated successfully!', 'data' => $studentClassWork]);
+        return response()->json([
+            'message' => 'Student class work updated successfully!',
+            'data' => $studentClassWork
+        ]);
     }
 
+    // Delete a specific student class work
     public function destroy($id)
     {
         StudentClassWork::destroy($id);

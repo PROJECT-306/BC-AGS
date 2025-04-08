@@ -22,7 +22,7 @@ class UserRoleFactory extends Factory
     {
         return [
             'user_role_number' => $this->faker->randomNumber(4),
-            'user_role_name' => $this->faker->randomElement(['Super Admin', 'Admin', 'Instructor', 'Student']),
+            'user_role_name' => $this->faker->randomElement(['Super Admin', 'Admin', 'Instructor', 'Dean', 'Chairperson']),
         ];
     }
 }
