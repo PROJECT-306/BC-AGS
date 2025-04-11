@@ -39,3 +39,11 @@
  ## April 3, 2025
  (TimnyaSupangibab)
  -Added CRUD Functionalities to tables that dont need Grade Calculations
+
+ ## April 11, 2025
+ feat: Enhance class work and grading calculations
+
+- Fix total items auto-population in student class work form
+- Update grade calculation to average multiple assessments
+- Apply correct weight percentages (40% quizzes, 20% OCR, 40% exams)
+- Fix student class work form submission
