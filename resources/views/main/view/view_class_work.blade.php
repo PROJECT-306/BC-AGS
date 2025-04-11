@@ -17,21 +17,23 @@
 
                     <table class="min-w-full bg-black text-white border border-gray-200">
                         <thead>
-                            <tr>
-                                <th class="px-6 py-4 text-left">Class Work ID</th>
-                                <th class="px-6 py-4 text-left">Assessment Type</th>
-                                <th class="px-6 py-4 text-left">Instructor</th>
-                                <th class="px-6 py-4 text-left">Total Items</th>
-                                <th class="px-6 py-4 text-left">Due Date</th>
-                                <th class="px-6 py-4 text-left">Actions</th>
+                            <tr class="text-white">
+                                <th class="px-6 py-3">ID</th>
+                                <th class="px-6 py-3">Title</th>
+                                <th class="px-6 py-3">Assessment Type</th>
+                                <th class="px-6 py-3">Instructor</th>
+                                <th class="px-6 py-3">Total Items</th>
+                                <th class="px-6 py-3">Due Date</th>
+                                <th class="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($classWorks as $classWork)
                                 <tr class="hover:bg-white hover:text-black">
                                     <td class="px-6 py-4">{{ $classWork->class_work_id }}</td>
+                                    <td class="px-6 py-4">{{ $classWork->class_work_title }}</td>
                                     <td class="px-6 py-4">{{ $classWork->subject->subject_name }}</td>
-                                    <td class="px-6 py-4">{{ $classWork->user->first_name .", ".$classWork->user->last_name }}</td>
+                                    <td class="px-6 py-4">{{ $classWork->user->first_name .", ". $classWork->user->last_name }}</td>
                                     <td class="px-6 py-4">{{ $classWork->total_items}}</td>
                                     <td class="px-6 py-4">
                                         @if($classWork->due_date)

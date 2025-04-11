@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StudentClassWork;
 use App\Models\ClassWork;
 use App\Models\Student;
+use App\Models\AssessmentType;
 use Illuminate\Http\Request;
 
 class StudentClassWorkController extends Controller
@@ -16,26 +17,39 @@ class StudentClassWorkController extends Controller
         return view("main.view.view_student_class_work", compact("studentClassWork"));
     }
 
+    // Show the form to create a new student class work
+    public function create()
+    {
+        $students = Student::all();
+        $classWorks = ClassWork::with('subject')->get();
+        $assessmentTypes = AssessmentType::all();
+
+        // Pass the total items directly to the view
+        return view("main.add.add_student_class_work", compact("students", "classWorks", "assessmentTypes"));
+    }
+
     // Store a newly created student class work
     public function store(Request $request)
     {
         // Validate form data
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'class_work_id' => 'required|exists:class_works,class_work_id', // Ensure using the correct primary key
-            'assessment_type_id' => 'required|exists:assessment_types,assessment_type_id',
+            'class_work_id' => 'required|exists:class_works,class_work_id',
             'raw_score' => 'required|integer|min:0',
             'total_items' => 'required|integer|min:1',
         ]);
     
+        // Get the assessment type from the class work
+        $classWork = ClassWork::findOrFail($request->class_work_id);
+        $assessmentType = $classWork->assessmentType;
+        
         // Compute the score based on the formula
         $computedScore = ($request->raw_score / $request->total_items) * 50 + 50;
     
         // Create the student class work entry
         $studentClassWork = StudentClassWork::create([
             'student_id' => $request->student_id,
-            'class_work_id' => $request->class_work_id,  // Using correct key
-            'assessment_type_id' => $request->assessment_type_id,
+            'class_work_id' => $request->class_work_id,
             'raw_score' => $request->raw_score,
             'total_items' => $request->total_items,
             'computed_score' => $computedScore

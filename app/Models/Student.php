@@ -26,4 +26,14 @@ class Student extends Model
     {
         return $this->belongsTo(Course::class, 'course_id');
     }
+
+    public function studentClassWorks()
+    {
+        return $this->hasMany(StudentClassWork::class, 'student_id');
+    }
+
+    public function classWorks()
+    {
+        return $this->hasManyThrough(ClassWork::class, StudentClassWork::class, 'student_id', 'class_work_id');
+    }
 }

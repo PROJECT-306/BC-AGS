@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Semester;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SemesterSeeder extends Seeder
 {
@@ -13,6 +14,26 @@ class SemesterSeeder extends Seeder
      */
     public function run(): void
     {
-        Semester::factory()->count(3)->create();
+        $semesters = [
+            ['semester_name' => 'First Semester'],
+            ['semester_name' => 'Second Semester'],
+            ['semester_name' => 'Summer'],
+        ];
+
+        foreach ($semesters as $semester) {
+            try {
+                DB::table('semesters')->insert([
+                    'semester_name' => $semester['semester_name'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                // If semester already exists, continue
+                if (str_contains($e->getMessage(), 'duplicate entry')) {
+                    continue;
+                }
+                throw $e;
+            }
+        }
     }
 }

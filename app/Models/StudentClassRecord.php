@@ -21,6 +21,7 @@ class StudentClassRecord extends Model
         'ocr',
         'exams',
         'computed_grade',
+        'gpa',
     ];
 
     public function student()

@@ -59,6 +59,7 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
 
     //Using a Custom Function in the controller outside the range of the resources function must be put down here
     //Organize Accordingly
+    Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
 });
 
 require __DIR__.'/auth.php';

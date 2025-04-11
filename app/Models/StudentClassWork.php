@@ -19,6 +19,7 @@ class StudentClassWork extends Model
         'raw_score',
         'total_items',
         'computed_score',
+        'assessment_type_id',
     ];
 
     public function student()
@@ -30,5 +31,10 @@ class StudentClassWork extends Model
     public function classWork()
     {
         return $this->belongsTo(ClassWork::class, 'class_work_id');
+    }
+
+    public function assessmentType()
+    {
+        return $this->belongsTo(AssessmentType::class, 'assessment_type_id');
     }
 }

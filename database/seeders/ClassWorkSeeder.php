@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ClassWork;
+use App\Models\AssessmentType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,9 @@ class ClassWorkSeeder extends Seeder
      */
     public function run(): void
     {
-        ClassWork::factory()->count(10)->create();
+        // Only create class works if there are assessment types available
+        if (AssessmentType::count() > 0) {
+            ClassWork::factory()->count(10)->create();
+        }
     }
 }

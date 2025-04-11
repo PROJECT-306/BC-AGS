@@ -6,6 +6,7 @@ use App\Models\
 {
     Student,
     Subject,
+    Semester,
 };
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,16 +24,22 @@ class FinalGrade extends Model
     [
         'student_id',
         'subject_id',
-        'final_grade',
+        'semester_id',
+        'grade',
     ];
 
     public function student()
     {
-        return $this->belongsTo(Student::class, "student_id");
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class, "subject_id");
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id');
     }
 }

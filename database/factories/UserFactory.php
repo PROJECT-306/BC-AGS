@@ -24,15 +24,18 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Randomly assign roles (30% chance for Instructor)
+        $roleIds = [1, 2, 3, 4, 5]; // SuperAdmin, Admin, Instructor, Chairperson, Dean
+        $roleWeights = [1, 1, 3, 1, 1]; // Weights for each role
+        $roleId = $this->faker->randomElement($roleIds, $roleWeights);
+
         return [
-            'first_name' => $this->faker->firstName(),
-            'middle_name' => $this->faker->optional()->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'user_role_id' => UserRole::query()->inRandomOrder()->value('user_role_id') ?? UserRole::factory()->create()->user_role_id,
+            'first_name' => fake()->firstName(),
+            'middle_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'password' => bcrypt('password'),
+            'user_role_id' => $roleId,
         ];
     }
 
