@@ -91,19 +91,31 @@ class StudentClassRecordController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
-            'grading_period_id' => 'required|exists:grading_periods,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
+            'grading_period_id' => 'required|exists:grading_periods,grading_period_id',
             'quizzes' => 'required|numeric|min:0|max:100',
             'ocr' => 'required|numeric|min:0|max:100',
             'exams' => 'required|numeric|min:0|max:100',
         ]);
 
         try {
+            // Find existing record for this student, subject, and grading period
+            $record = StudentClassRecord::where([
+                'student_id' => $request->student_id,
+                'subject_id' => $request->subject_id,
+                'grading_period_id' => $request->grading_period_id,
+            ])->first();
+
+            // Use existing values if not provided in request
+            $quizzes = $request->has('quizzes') ? $request->quizzes : ($record ? $record->quizzes : null);
+            $ocr = $request->has('ocr') ? $request->ocr : ($record ? $record->ocr : null);
+            $exams = $request->has('exams') ? $request->exams : ($record ? $record->exams : null);
+
             // Calculate the final grade (40% Quizzes, 20% OCR, 40% Exams)
             $finalGrade = (
-                ($request->quizzes * 0.4) +
-                ($request->ocr * 0.2) +
-                ($request->exams * 0.4)
+                ($quizzes !== null ? $quizzes : 0) * 0.4 +
+                ($ocr !== null ? $ocr : 0) * 0.2 +
+                ($exams !== null ? $exams : 0) * 0.4
             );
 
             // Create or update the student class record
@@ -114,9 +126,9 @@ class StudentClassRecordController extends Controller
                     'grading_period_id' => $request->grading_period_id,
                 ],
                 [
-                    'quizzes' => $request->quizzes,
-                    'ocr' => $request->ocr,
-                    'exams' => $request->exams,
+                    'quizzes' => $quizzes,
+                    'ocr' => $ocr,
+                    'exams' => $exams,
                     'computed_grade' => $finalGrade,
                 ]
             );

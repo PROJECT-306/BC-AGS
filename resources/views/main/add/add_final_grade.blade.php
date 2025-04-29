@@ -47,14 +47,8 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="subject_id">
                                 Subject
                             </label>
-                            <select name="subject_id" id="subject_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                                <option value="" disabled selected>Select a subject</option>
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->subject_id }}">
-                                        {{ $subject->subject_name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="subject_name" id="subject_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+<input type="hidden" name="subject_id" id="subject_id" required>
                             @error('subject_id')
                                 <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
@@ -64,14 +58,8 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="semester_id">
                                 Semester
                             </label>
-                            <select name="semester_id" id="semester_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                                <option value="" disabled selected>Select a semester</option>
-                                @foreach ($semesters as $semester)
-                                    <option value="{{ $semester->semester_id }}">
-                                        {{ $semester->semester_name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="semester_name" id="semester_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+<input type="hidden" name="semester_id" id="semester_id" required>
                             @error('semester_id')
                                 <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
@@ -81,7 +69,7 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="grade">
                                 Grade
                             </label>
-                            <input type="number" name="grade" id="grade" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" min="0" max="100" required>
+                            <input type="number" name="grade" id="grade" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" min="0" max="100" required readonly>
                             @error('grade')
                                 <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
@@ -97,4 +85,49 @@
             </div>
         </div>
     </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const studentSelect = document.getElementById('student_id');
+    const subjectInput = document.getElementById('subject_name');
+    const subjectIdInput = document.getElementById('subject_id');
+    const semesterInput = document.getElementById('semester_name');
+    const semesterIdInput = document.getElementById('semester_id');
+    const gradeInput = document.getElementById('grade');
+
+    function fetchStudentData() {
+        const studentId = studentSelect.value;
+        if (!studentId) return;
+        fetch(`/final-grades/fetch-student-data?student_id=${studentId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Fill subject and semester directly from the record
+                if (data.subject) {
+                    subjectInput.value = data.subject.subject_name;
+                    subjectIdInput.value = data.subject.subject_id;
+                } else {
+                    subjectInput.value = '';
+                    subjectIdInput.value = '';
+                }
+                if (data.semester) {
+                    semesterInput.value = data.semester.semester_name;
+                    semesterIdInput.value = data.semester.semester_id;
+                } else {
+                    semesterInput.value = '';
+                    semesterIdInput.value = '';
+                }
+                // Set grade
+                if (data.grade !== null && typeof data.grade !== 'undefined') {
+                    gradeInput.value = data.grade;
+                } else {
+                    gradeInput.value = '';
+                }
+            });
+    }
+
+    // When student changes, auto-fill subject, semester, and grade
+    studentSelect.addEventListener('change', function() {
+        fetchStudentData();
+    });
+});
+</script>
 </x-app-layout>

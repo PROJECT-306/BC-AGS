@@ -26,31 +26,26 @@ class FinalGradeController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
             'semester_id' => 'required|exists:semesters,id',
         ]);
 
         try {
-            // Get the student's record for this semester
-            $record = StudentClassRecord::where('student_id', $request->student_id)
-                ->where('subject_id', $request->subject_id)
-                ->whereHas('gradingPeriod', function($query) use ($request) {
-                    $query->where('semester_id', $request->semester_id);
-                })
-                ->first();
+            // Calculate the final grade using all relevant StudentClassRecord entries
+            $calculatedGrade = FinalGrade::calculateFinalGrade($request->student_id, $request->subject_id, $request->semester_id);
 
-            if (!$record) {
+            if ($calculatedGrade === null) {
                 return redirect()->back()
                     ->withInput()
-                    ->with('error', 'No record found for this student and semester');
+                    ->with('error', 'No records found for this student, subject, and semester');
             }
 
-            // Create the final grade using the computed grade from StudentClassRecord
+            // Create the final grade using the calculated grade
             $grade = FinalGrade::create([
                 'student_id' => $request->student_id,
                 'subject_id' => $request->subject_id,
                 'semester_id' => $request->semester_id,
-                'grade' => $record->computed_grade,
+                'grade' => $calculatedGrade,
             ]);
 
             // Update the student's average grade
@@ -79,7 +74,22 @@ class FinalGradeController extends Controller
             'grade' => 'numeric|min:0|max:100',
         ]);
 
-        $grade->update($request->only(['grade']));
+        // Optionally, recalculate the grade if student_id, subject_id, or semester_id are present in the request
+        $student_id = $request->input('student_id', $grade->student_id);
+        $subject_id = $request->input('subject_id', $grade->subject_id);
+        $semester_id = $request->input('semester_id', $grade->semester_id);
+
+        $calculatedGrade = FinalGrade::calculateFinalGrade($student_id, $subject_id, $semester_id);
+        if ($calculatedGrade !== null) {
+            $grade->update([
+                'grade' => $calculatedGrade,
+                'student_id' => $student_id,
+                'subject_id' => $subject_id,
+                'semester_id' => $semester_id,
+            ]);
+        } else {
+            // If no records found, keep the previous grade or handle as needed
+        }
 
         // Update the student's average grade
         $this->updateGPA($grade->student_id);
@@ -137,4 +147,48 @@ class FinalGradeController extends Controller
             $studentRecord->update(['gpa' => $average]);
         }
     }
+
+    /**
+     * AJAX endpoint to get subjects, semesters, and grade for a student
+     */
+    public function fetchStudentData(Request $request)
+    {
+        $student_id = $request->input('student_id');
+        $subject_id = $request->input('subject_id');
+        $semester_id = $request->input('semester_id');
+
+        $subject = null;
+        $semester = null;
+        $grade = null;
+
+        // If subject_id and semester_id are provided, use them to fetch subject and semester
+        if ($subject_id && $semester_id) {
+            $subject = \App\Models\Subject::find($subject_id);
+            $semester = \App\Models\Semester::find($semester_id);
+            // Calculate the average final grade for the student, subject, and semester
+            $grade = \App\Models\FinalGrade::calculateFinalGrade($student_id, $subject_id, $semester_id);
+        } else {
+            // Fallback: get the first StudentClassRecord for the student
+            $record = \App\Models\StudentClassRecord::where('student_id', $student_id)
+                ->with(['subject', 'gradingPeriod.semester'])
+                ->first();
+            if ($record) {
+                $subject = $record->subject;
+                $semester = $record->gradingPeriod ? $record->gradingPeriod->semester : null;
+                // Calculate the average final grade for this subject and semester
+                if ($subject && $semester) {
+                    $grade = \App\Models\FinalGrade::calculateFinalGrade($student_id, $subject->subject_id, $semester->semester_id);
+                } else {
+                    $grade = $record->computed_grade;
+                }
+            }
+        }
+
+        return response()->json([
+            'subject' => $subject,
+            'semester' => $semester,
+            'grade' => $grade,
+        ]);
+    }
 }
+

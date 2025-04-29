@@ -117,7 +117,7 @@ class ClassWorkController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
             'instructor_id' => 'required|exists:users,id',  // Ensure instructor_id exists in the users table
             'assessment_type_id' => 'required|exists:assessment_types,assessment_type_id',
             'total_items' => 'required|integer|min:1',

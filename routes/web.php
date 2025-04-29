@@ -59,6 +59,7 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
 
     //Using a Custom Function in the controller outside the range of the resources function must be put down here
     //Organize Accordingly
+    Route::get('/final-grades/fetch-student-data', [FinalGradeController::class, 'fetchStudentData'])->name('final-grades.fetch-student-data');
     Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
 });
 

@@ -24,7 +24,7 @@ class StudentSubjectController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
             'semester_id' => 'required|exists:semesters,id',
         ]);
 
@@ -48,7 +48,7 @@ class StudentSubjectController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
             'semester_id' => 'required|exists:semesters,id',
         ]);
 

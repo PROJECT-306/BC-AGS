@@ -71,42 +71,53 @@
                         </div>
 
                         <script>
-                            // Initialize scores to 0 when page loads
-                            document.getElementById('quizzes').value = 0;
-                            document.getElementById('ocr').value = 0;
-                            document.getElementById('exams').value = 0;
-                            document.getElementById('final_grade').value = 0;
+    // Initialize scores to 0 when page loads
+    document.getElementById('quizzes').value = 0;
+    document.getElementById('ocr').value = 0;
+    document.getElementById('exams').value = 0;
+    document.getElementById('final_grade').value = 0;
 
-                            // Update scores when student is selected
-                            document.getElementById('student_id').addEventListener('change', function() {
-                                const studentId = this.value;
-                                
-                                if (studentId) {
-                                    fetch(`/student-class-records/${studentId}/scores`)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            document.getElementById('quizzes').value = data.quizzes || 0;
-                                            document.getElementById('ocr').value = data.ocr || 0;
-                                            document.getElementById('exams').value = data.exams || 0;
-                                            document.getElementById('final_grade').value = data.final_grade || 0;
-                                        })
-                                        .catch(error => {
-                                            console.error('Error fetching scores:', error);
-                                            // If there's an error, keep the default values
-                                            document.getElementById('quizzes').value = 0;
-                                            document.getElementById('ocr').value = 0;
-                                            document.getElementById('exams').value = 0;
-                                            document.getElementById('final_grade').value = 0;
-                                        });
-                                } else {
-                                    // If no student is selected, reset to 0
-                                    document.getElementById('quizzes').value = 0;
-                                    document.getElementById('ocr').value = 0;
-                                    document.getElementById('exams').value = 0;
-                                    document.getElementById('final_grade').value = 0;
-                                }
-                            });
-                        </script>
+    // Function to calculate and update the final grade
+    function updateFinalGrade() {
+        const quizzes = parseFloat(document.getElementById('quizzes').value) || 0;
+        const ocr = parseFloat(document.getElementById('ocr').value) || 0;
+        const exams = parseFloat(document.getElementById('exams').value) || 0;
+        const finalGrade = (quizzes * 0.4) + (ocr * 0.2) + (exams * 0.4);
+        document.getElementById('final_grade').value = finalGrade.toFixed(2);
+    }
+
+    // Update scores when student is selected
+    document.getElementById('student_id').addEventListener('change', function() {
+        const studentId = this.value;
+        if (studentId) {
+            fetch(`/student-class-records/${studentId}/scores`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quizzes').value = data.quizzes || 0;
+                    document.getElementById('ocr').value = data.ocr || 0;
+                    document.getElementById('exams').value = data.exams || 0;
+                    updateFinalGrade();
+                })
+                .catch(error => {
+                    console.error('Error fetching scores:', error);
+                    document.getElementById('quizzes').value = 0;
+                    document.getElementById('ocr').value = 0;
+                    document.getElementById('exams').value = 0;
+                    updateFinalGrade();
+                });
+        } else {
+            document.getElementById('quizzes').value = 0;
+            document.getElementById('ocr').value = 0;
+            document.getElementById('exams').value = 0;
+            updateFinalGrade();
+        }
+    });
+
+    // Add input listeners to quizzes, ocr, and exams fields
+    document.getElementById('quizzes').addEventListener('input', updateFinalGrade);
+    document.getElementById('ocr').addEventListener('input', updateFinalGrade);
+    document.getElementById('exams').addEventListener('input', updateFinalGrade);
+</script>
 
                         <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">
                             Add Record
