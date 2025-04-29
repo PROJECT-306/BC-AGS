@@ -15,6 +15,28 @@
                         Add Record
                     </a>
 
+                    @if (session('success'))
+                        <div class="mb-4 p-4 bg-green-600 text-white rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                
+                    @if (session('error'))
+                        <div class="mb-4 p-4 bg-red-600 text-white rounded">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                
+                    @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-600 text-white rounded">
+                            <ul class="list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     @if($studentClassWork->isEmpty())
                         <p class="text-gray-400">No student class work records found.</p>
                     @else

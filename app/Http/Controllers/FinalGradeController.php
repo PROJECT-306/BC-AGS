@@ -9,9 +9,20 @@ use App\Models\Subject;
 use App\Models\GradingPeriod;
 use App\Models\Semester;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FinalGradeController extends Controller
 {
+    public function __construct()
+    {
+        $allowedRoles = [1, 3, 4];
+
+        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
+        {
+            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
+        }
+    }
+
     public function index()
     {
         $finalGrades = FinalGrade::all();

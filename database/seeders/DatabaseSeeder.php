@@ -21,6 +21,14 @@ class DatabaseSeeder extends Seeder
             echo "Assessment types already exist, continuing...\n";
         }
 
+        // Seed academic years
+        try {
+            $this->call(AcademicYearSeeder::class);
+            echo "Academic years seeded successfully\n";
+        } catch (\Exception $e) {
+            echo "Academic years already exist, continuing...\n";
+        }
+
         // Seed user roles
         try {
             $this->call(UserRoleSeeder::class);

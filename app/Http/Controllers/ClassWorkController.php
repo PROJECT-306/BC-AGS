@@ -13,10 +13,21 @@ use App\Models\
     Student,
     StudentClassRecord,
 };
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class ClassWorkController extends Controller
 {
+    public function __construct()
+    {
+        $allowedRoles = [1, 3];
+
+        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
+        {
+            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
+        }
+    }
+
     // Display a listing of the class works
     public function index()
     {
@@ -79,8 +90,7 @@ class ClassWorkController extends Controller
             $assessmentType = AssessmentType::find($request->assessment_type_id);
             $successMessage = "Class work '{$request->class_work_title}' for {$assessmentType->assessment_name} has been added successfully!";
 
-            return redirect()->route('classworks.index')
-                ->with('success', $successMessage);
+            return redirect()->route('class-works.index')->with('success', $successMessage);
 
         } catch (\Exception $e) {
             return redirect()->back()
@@ -117,7 +127,7 @@ class ClassWorkController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
             'instructor_id' => 'required|exists:users,id',  // Ensure instructor_id exists in the users table
             'assessment_type_id' => 'required|exists:assessment_types,assessment_type_id',
             'total_items' => 'required|integer|min:1',

@@ -54,4 +54,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserRole::class, "user_role_id", "user_role_id");
     }
+
+    public function scopeUserInstructor($query)
+    {
+        return $query->whereHas("user_role", function ($query) {
+            $query->where("user_role_number", "ROLE-003")
+                  ->where("user_role_name", "Instructor");
+        });
+    }
 }

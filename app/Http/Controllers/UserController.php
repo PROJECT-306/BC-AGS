@@ -5,9 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $allowedRoles = [1, 2];
+
+        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
+        {
+            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
+        }
+    }
+
     public function index()
     {
         return response()->json(User::all());

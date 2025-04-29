@@ -3,6 +3,18 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">
+        @if (session('success'))
+            <div class="mb-4 p-4 bg-green-600 text-white rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="mb-4 p-4 bg-red-600 text-white rounded">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @csrf
 
         <!-- Email Address -->

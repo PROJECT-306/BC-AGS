@@ -7,10 +7,21 @@ use App\Models\
     Subject,
     Course,
 };
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
+    public function __construct()
+    {
+        $allowedRoles = [1, 3, 4, 5];
+
+        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
+        {
+            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
+        }
+    }
+
     public function index()
     {
         $subjects = Subject::with(

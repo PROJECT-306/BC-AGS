@@ -9,9 +9,20 @@ use App\Models\GradingPeriod;
 use App\Models\StudentClassWork;
 use App\Models\FinalGrade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentClassRecordController extends Controller
 {
+    public function __construct()
+    {
+        $allowedRoles = [1, 4];
+
+        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
+        {
+            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
+        }
+    }
+
     public function create()
     {
         $students = Student::all();

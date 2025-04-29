@@ -17,17 +17,25 @@
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <button @click="open = !open" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                <div x-data = "{viewOpen: false}" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <button @click="viewOpen = !viewOpen" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                         <span>{{ __('View') }}</span>
                         <svg class="ms-2 h-4 w-4 fill-current" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
                     </button>
             
-                    <div x-show="open" @click.away="open = false" class="absolute mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg rounded-md py-1 z-50">
+                    <div x-show="viewOpen" @click.away="viewOpen = false" class="absolute mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg rounded-md py-1 z-50">
                         <x-dropdown-link href="{{ route('assessment-types.index') }}">
                             {{ __('Assesment Type') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link href="{{ route('academic-years.index') }}">
+                            {{ __('Academic Year') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link href="{{ route('class-sections.index') }}">
+                            {{ __('Class Sections') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link href="{{ route('class-works.index') }}">
@@ -82,6 +90,29 @@
                             {{ __('User Roles') }}
                         </x-dropdown-link>
                     </div>
+
+                    
+                </div>
+
+                <div x-data = "{systemFeaturesOpen: false}" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <button @click="systemFeaturesOpen = !systemFeaturesOpen" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        <span>{{ __('System Features') }}</span>
+                        <svg class="ms-2 h-4 w-4 fill-current" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+            
+                    <div x-show="systemFeaturesOpen" @click.away="systemFeaturesOpen = false" class="absolute mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg rounded-md py-1 z-50">
+                        <x-dropdown-link href="#">
+                            {{ __('Make A Class Record') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link href="#">
+                            {{ __('Grade Students') }}
+                        </x-dropdown-link>
+                    </div>
+
+                    
                 </div>
             </div>
 

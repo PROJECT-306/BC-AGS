@@ -3,6 +3,8 @@
 use App\Http\Controllers\
 {
     AssessmentTypeController,
+    AcademicYearController,
+    ClassSectionController,
     ClassWorkController,
     Controller,
     CourseController,
@@ -41,6 +43,8 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
     Route::resources(
         [
             "assessment-types"     => AssessmentTypeController::class,
+            "academic-years"       => AcademicYearController::class,
+            "class-sections"       => ClassSectionController::class,
             "class-works"          => ClassWorkController::class,
             "courses"              => CourseController::class,
             "departments"          => DepartmentController::class,
