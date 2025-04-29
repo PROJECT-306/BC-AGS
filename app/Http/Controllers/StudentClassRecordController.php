@@ -102,8 +102,8 @@ class StudentClassRecordController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
-            'grading_period_id' => 'required|exists:grading_periods,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
+            'grading_period_id' => 'required|exists:grading_periods,grading_period_id',
             'quizzes' => 'required|numeric|min:0|max:100',
             'ocr' => 'required|numeric|min:0|max:100',
             'exams' => 'required|numeric|min:0|max:100',
@@ -132,24 +132,10 @@ class StudentClassRecordController extends Controller
                 ]
             );
 
-            // Create or update the final grade record
-            $grade = FinalGrade::updateOrCreate(
-                [
-                    'student_id' => $request->student_id,
-                    'subject_id' => $request->subject_id,
-                    'grading_period_id' => $request->grading_period_id,
-                ],
-                [
-                    'grade' => $finalGrade,
-                ]
-            );
-
-            // Update the student's average grade
-            $this->updateGPA($request->student_id);
-
+            // Note: No longer updating/inserting into final_grades table.
+            // Only updating student_class_records.
             return redirect()->route('student-class-records.index')
-                ->with('success', 'Record and grade created successfully!');
-
+                ->with('success', 'Record and computed grade stored successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -157,50 +143,7 @@ class StudentClassRecordController extends Controller
         }
     }
 
-    private function updateGPA($studentId)
-    {
-        // Get all grading periods
-        $gradingPeriods = GradingPeriod::all();
-        
-        // Get the student's grades for each grading period
-        $totalGrades = 0;
-        $count = 0;
-
-        foreach ($gradingPeriods as $period) {
-            // Get the student's final grade for this grading period
-            $grade = FinalGrade::where('student_id', $studentId)
-                ->where('grading_period_id', $period->grading_period_id)
-                ->first();
-
-            if ($grade) {
-                $totalGrades += $grade->grade;
-                $count++;
-            }
-        }
-
-        // Calculate the average of all grading periods
-        $average = $count > 0 ? round($totalGrades / $count, 2) : 0;
-
-        // Create or update the final grade record
-        $finalGrade = FinalGrade::updateOrCreate(
-            [
-                'student_id' => $studentId,
-                'subject_id' => $grade->subject_id ?? null,
-                'grading_period_id' => null, // This is the final grade, not tied to a specific period
-            ],
-            [
-                'grade' => $average,
-            ]
-        );
-
-        // Update the student's record with the final grade
-        $studentRecord = StudentClassRecord::where('student_id', $studentId)
-            ->first();
-
-        if ($studentRecord) {
-            $studentRecord->update(['gpa' => $average]);
-        }
-    }
+    // Removed updateGPA. GPA and final_grades are no longer managed here as computed grades are solely stored in student_class_records.
 
     public function show($id)
     {
@@ -220,8 +163,8 @@ class StudentClassRecordController extends Controller
         $record->update($request->only(['quizzes', 'ocr', 'exams']));
 
         // Recalculate grade
-        $record->final_grade = ($record->quizzes * 0.4) + ($record->ocr * 0.2) + ($record->exams * 0.4);
-        $record->save();
+        $request->computed_grade = ($record->quizzes * 0.4) + ($record->ocr * 0.2) + ($record->exams * 0.4);
+        $record->update(['computed_grade' => $request->computed_grade]);
 
         return response()->json(['message' => 'Student class record updated!', 'data' => $record]);
     }

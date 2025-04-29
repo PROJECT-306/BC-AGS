@@ -49,7 +49,7 @@
                                     <th class="px-4 py-2">Quizzes</th>
                                     <th class="px-4 py-2">OCR</th>
                                     <th class="px-4 py-2">Exams</th>
-                                    <th class="px-4 py-2">Final Grade</th>
+                                    <th class="px-4 py-2">Computed Grade</th>
                                     <th class="px-4 py-2">Actions</th>
                                 </tr>
                             </thead>
@@ -62,7 +62,7 @@
                                         <td class="px-4 py-2">{{ $record->quizzes }}</td>
                                         <td class="px-4 py-2">{{ $record->ocr }}</td>
                                         <td class="px-4 py-2">{{ $record->exams }}</td>
-                                        <td class="px-4 py-2 font-semibold">{{ number_format($record->final_grade, 2) }}</td>
+                                        <td class="px-4 py-2 font-semibold">{{ number_format($record->computed_grade, 2) }}</td>
                                         <td class="px-4 py-2 flex gap-2">
                                             <a href="{{ route('student-class-records.edit', $record->student_class_record_id) }}" class="text-blue-400 hover:underline text-sm">Edit</a>
                                             <form action="{{ route('student-class-records.destroy', $record->student_class_record_id) }}" method="POST" onsubmit="return confirm('Are you sure?');">

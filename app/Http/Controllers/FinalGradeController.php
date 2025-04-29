@@ -56,19 +56,9 @@ class FinalGradeController extends Controller
                     ->with('error', 'No record found for this student and semester');
             }
 
-            // Create the final grade using the computed grade from StudentClassRecord
-            $grade = FinalGrade::create([
-                'student_id' => $request->student_id,
-                'subject_id' => $request->subject_id,
-                'semester_id' => $request->semester_id,
-                'grade' => $record->computed_grade,
-            ]);
-
-            // Update the student's average grade
-            $this->updateGPA($request->student_id);
-
+            // Do not insert into FinalGrade; just confirm the record exists and return success
             return redirect()->route('final-grades.index')
-                ->with('success', 'Final grade created successfully!');
+                ->with('success', 'Student class record found. No final grade inserted, as computed grade is already stored.');
 
         } catch (\Exception $e) {
             return redirect()->back()
@@ -84,18 +74,9 @@ class FinalGradeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $grade = FinalGrade::findOrFail($id);
-
-        $request->validate([
-            'grade' => 'numeric|min:0|max:100',
-        ]);
-
-        $grade->update($request->only(['grade']));
-
-        // Update the student's average grade
-        $this->updateGPA($grade->student_id);
-
-        return response()->json(['message' => 'Grade updated!', 'data' => $grade]);
+        // No longer updating final_grades or GPA here.
+        // This function can be removed or left as a stub if required by routes.
+        return response()->json(['message' => 'Grade update endpoint is deprecated. Computed grades are managed in student_class_records only.']);
     }
 
     public function destroy($id)
@@ -104,48 +85,5 @@ class FinalGradeController extends Controller
         return response()->json(['message' => 'Final grade deleted!']);
     }
 
-    private function updateGPA($studentId)
-    {
-        // Get all semesters
-        $semesters = Semester::all();
-        
-        // Get the student's grades for each semester
-        $totalGrades = 0;
-        $count = 0;
-
-        foreach ($semesters as $semester) {
-            // Get the student's final grade for this semester
-            $grade = FinalGrade::where('student_id', $studentId)
-                ->where('semester_id', $semester->semester_id)
-                ->first();
-
-            if ($grade) {
-                $totalGrades += $grade->grade;
-                $count++;
-            }
-        }
-
-        // Calculate the average of all semesters
-        $average = $count > 0 ? round($totalGrades / $count, 2) : 0;
-
-        // Create or update the final grade record
-        $finalGrade = FinalGrade::updateOrCreate(
-            [
-                'student_id' => $studentId,
-                'subject_id' => $grade->subject_id ?? null,
-                'semester_id' => null, // This is the final grade, not tied to a specific semester
-            ],
-            [
-                'grade' => $average,
-            ]
-        );
-
-        // Update the student's record with the final grade
-        $studentRecord = StudentClassRecord::where('student_id', $studentId)
-            ->first();
-
-        if ($studentRecord) {
-            $studentRecord->update(['gpa' => $average]);
-        }
-    }
+    // Removed updateGPA. GPA and final_grades are no longer managed here as computed grades are solely stored in student_class_records.
 }
