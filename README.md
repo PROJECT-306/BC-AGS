@@ -47,3 +47,10 @@
 - Update grade calculation to average multiple assessments
 - Apply correct weight percentages (40% quizzes, 20% OCR, 40% exams)
 - Fix student class work form submission
+
+## April 30, 2025
+(Bogart)
+- Refactored grading logic so that computed grades are now stored exclusively in the `student_class_records` table.
+- Removed all logic and references to the `final_grades` table from controllers and views to prevent redundant data and related SQL errors.
+- Streamlined grade management: all computed grade operations (creation, update, and display) are now centralized in `student_class_records`.
+- This change improves data consistency and avoids confusion between "Final Grade" and "Computed Grade" fields.
