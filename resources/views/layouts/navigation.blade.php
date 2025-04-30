@@ -103,7 +103,7 @@
                     </button>
             
                     <div x-show="systemFeaturesOpen" @click.away="systemFeaturesOpen = false" class="absolute mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg rounded-md py-1 z-50">
-                        <x-dropdown-link href="#">
+                        <x-dropdown-link href="{{ route('class-sections.redirectToClassSection') }}">
                             {{ __('Make A Class Record') }}
                         </x-dropdown-link>
 
