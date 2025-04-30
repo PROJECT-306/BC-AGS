@@ -13,13 +13,10 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with(
-            [
-                "department"
-            ]
-        )->get();
+        $courses = Course::with("department")->get();
+        $departments = Department::all();
 
-        return view("main.view.view_course", compact("courses"));
+        return view("main.view.view_course", compact('courses', 'departments'));
     }
 
     public function create()

@@ -1,15 +1,11 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Add New Course
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-black overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-black border-b border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 text-white">Add Course</h3>
+                <div class="p-6 bg-green-50 border-b border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">Add Course</h3>
 
                     @if ($errors->any())
                         <div class="bg-red-500 text-white p-3 rounded mb-4">
@@ -25,12 +21,12 @@
                         @csrf
 
                         <div class="mb-4">
-                            <label class="text-white">Course Name</label>
+                            Course Name
                             <input type="text" name="course_name" class="w-full p-2 rounded" required>
                         </div>
 
                         <div class="mb-4">
-                            <label class="text-white">Department</label>
+                            Department
                             <select name="department_id" class="w-full p-2 rounded" required>
                                 <option value="" disabled selected>Select a department</option>
                                 @foreach ($departments as $department)
@@ -47,4 +43,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

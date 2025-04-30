@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app') 
+
+@section('content')
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Edit Subject
@@ -31,7 +33,7 @@
                                 <option value="" disabled>Select Course</option>
                                 @foreach($courses as $course)
                                     <option value="{{ $course->course_id }}" 
-                                        {{ old('course_id', $subjects->course_id) == $course->course_id ? 'selected' : '' }}>
+                                        {{ old('course_id', $subjects->course_id) == $course->course_id ? 'selected' : '' }} >
                                         {{ $course->course_name }}
                                     </option>
                                 @endforeach
@@ -49,5 +51,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
-
+@endsection

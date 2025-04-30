@@ -1,10 +1,6 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Add Subject
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-black overflow-hidden shadow-sm sm:rounded-lg">
@@ -18,7 +14,7 @@
                         <div class="mb-4">
                             <label for="subject_name" class="text-white">Subject Name</label>
                             <input type="text" id="subject_name" name="subject_name" 
-                            class="w-full p-2 border rounded-md" required>
+                                   class="w-full p-2 border rounded-md" required>
                             @error('subject_name')
                                 <div class="text-red-500">{{ $message }}</div>
                             @enderror
@@ -49,4 +45,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

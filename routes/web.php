@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\
-{
+use App\Http\Controllers\{
     AssessmentTypeController,
     ClassWorkController,
     Controller,
@@ -18,48 +17,51 @@ use App\Http\Controllers\
     SubjectController,
     UserController,
     UserRoleController,
+    DashboardController,  
+    InstructorController,
 };
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route for the dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-Route::middleware(["auth", "verified", "throttle:60,1"])->group(function () 
-{
+// Group routes that require authentication and verification
+Route::middleware(["auth", "verified", "throttle:60,1"])->group(function () {
+
+    // Routes for profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Update accordingly when adding a new table
-    //Route::resources automatically assigns the commands(index, create, store, show, edit, update, and destroy)
-    Route::resources(
-        [
-            "assessment-types"     => AssessmentTypeController::class,
-            "class-works"          => ClassWorkController::class,
-            "courses"              => CourseController::class,
-            "departments"          => DepartmentController::class,
-            "final-grades"         => FinalGradeController::class,
-            "grading-periods"      => GradingPeriodController::class,
-            "semesters"            => SemesterController::class,
-            "student-class-records"=> StudentClassRecordController::class,
-            "student-class-works"  => StudentClassWorkController::class,
-            "students"             => StudentController::class,
-            "student-subjects"     => StudentSubjectController::class,
-            "subjects"             => SubjectController::class,
-            "users"                => UserController::class,
-            "user-roles"           => UserRoleController::class,
-        ]
-    );
+    // Resources routes for CRUD operations on various models
+    Route::resources([
+        "assessment-types"     => AssessmentTypeController::class,
+        "class-works"          => ClassWorkController::class,
+        "courses"              => CourseController::class,
+        "departments"          => DepartmentController::class,
+        "final-grades"         => FinalGradeController::class,
+        "grading-periods"      => GradingPeriodController::class,
+        "semesters"            => SemesterController::class,
+        "student-class-records"=> StudentClassRecordController::class,
+        "student-class-works"  => StudentClassWorkController::class,
+        "students"             => StudentController::class,
+        "student-subjects"     => StudentSubjectController::class,
+        "subjects"             => SubjectController::class,
+        "users"                => UserController::class,
+        "user-roles"           => UserRoleController::class,
+    ]);
 
-    //Using a Custom Function in the controller outside the range of the resources function must be put down here
-    //Organize Accordingly
+    // Custom route for fetching student scores
     Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
+
+    // Route for managing chairperson
+    Route::get('/chairperson', [InstructorController::class, 'index'])->name('manage.chairperson');
 });
 
 require __DIR__.'/auth.php';
