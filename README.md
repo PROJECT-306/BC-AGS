@@ -54,3 +54,12 @@
 - Removed all logic and references to the `final_grades` table from controllers and views to prevent redundant data and related SQL errors.
 - Streamlined grade management: all computed grade operations (creation, update, and display) are now centralized in `student_class_records`.
 - This change improves data consistency and avoids confusion between "Final Grade" and "Computed Grade" fields.
+
+## May 1, 2025
+(Bogart)
+- Implemented final grades view and list functionality
+  - Added a new view to display all final grades in a table format
+  - Updated navigation menu to include Final Grades link
+  - Fixed null relationship handling in final grades view
+  - Added semester_id to final_grades table for better organization
+  - Added proper error handling and display for missing relationships
