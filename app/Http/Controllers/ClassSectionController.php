@@ -7,14 +7,21 @@ use App\Models\
     ClassSection,
     AcademicYear,
     User,
+    Subject,
 };
+
+use App\Models\GradingSystem\
+{
+    GradingSystemStudentGrades,
+};
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 //Modify the class records with the current changes
 class ClassSectionController extends Controller
 {
-    /**
+        /**
      * Display a listing of the resource.
      */
     public function __construct()
@@ -33,10 +40,39 @@ class ClassSectionController extends Controller
             [
                 "user",
                 "academicYear",
+                "subject",
             ]
         )->get();
 
         return view("main.view.view_class_section", compact("classSections"));
+    }
+
+    public function redirectToClassSection()
+    {
+        $classSections = ClassSection::with(
+            [
+                "user",
+                "academicYear",
+            ]
+        )->get();
+
+        return view("main.grading_system.instructor.class_section.class_section", compact("classSections"));
+    }
+
+    public function redirectToClassSectionOptions(Request $request)
+    {
+        $classSection = ClassSection::findOrFail($request->query("class_section_id"));
+        $subject = Subject::findOrFail($request->query("subject_id"));
+
+        return view("main.grading_system.instructor.class_section.class_section_options", compact("classSection", "subject"));
+    }
+
+    public function redirectToClassRecord(Request $request)
+    {
+        $classSection = ClassSection::findOrFail($request->query("class_section_id"));
+        $subject = Subject::findOrFail($request->query("subject_id"));
+
+        return view("main.grading_system.instructor.class_section.class_record", compact("classSection", "subject"));
     }
 
     /**
@@ -46,9 +82,10 @@ class ClassSectionController extends Controller
     {
         //This strictly only queries the users with the Instructor Role
         $users = User::userInstructor()->get();
-
         $academicYears = AcademicYear::all();
-        return view("main.add.add_class_section", compact("users", "academicYears"));
+        $subjects = Subject::all();
+
+        return view("main.add.add_class_section", compact("users", "academicYears", "subjects"));
     }
 
     /**
@@ -60,10 +97,11 @@ class ClassSectionController extends Controller
             'class_section_name' => 'required|string|max:255',
             'academic_year_id' => 'required|exists:academic_year,academic_year_id',
             'user_id' => 'required|exists:users,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
         ]);
 
         ClassSection::create($request->all());
-        return redirect()->route('class-sections.index')->with('success', 'Class Section Added.');
+        return redirect()->route('class-sections.redirectToClassSection')->with('success', 'Class Section Added.');
     }
 
     /**
@@ -95,10 +133,11 @@ class ClassSectionController extends Controller
             'class_section_name' => 'required|string|max:255',
             'academic_year_id' => 'required|exists:academic_year,academic_year_id',
             'user_id' => 'required|exists:users,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
         ]);
 
         $classSection->update($request->all());
-        return redirect()->route('class-sections.index')->with('success', 'Class Section Updated.');
+        return redirect()->route('class-sections.redirectToClassSection')->with('success', 'Class Section Updated.');
     }
 
     /**
@@ -110,6 +149,7 @@ class ClassSectionController extends Controller
         // Optionally, you can use soft deletes instead of hard deletes
         // Will use the soft delete feature once we get a the system stable
 
-        return redirect()->route('class-sections.index')->with('success', 'Class Section Deleted.');
+        return redirect()->route('class-sections.redirectToClassSection')->with('success', 'Class Section Deleted.');
     }
 }
+

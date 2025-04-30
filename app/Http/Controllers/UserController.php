@@ -21,7 +21,9 @@ class UserController extends Controller
 
     public function index()
     {
-        return response()->json(User::all());
+        $user = User::all();
+
+        return view("main.view.view_users", compact("user"));
     }
 
     public function store(Request $request)

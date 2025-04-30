@@ -4,11 +4,9 @@ namespace App\Models;
 
 use App\Models\
 {
-    Subject,
     AssessmentType,
-    User,
-    Student,
     StudentClassWork, // Added StudentClassWork to the use statement
+    ClassSection,
 };
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,10 +21,9 @@ class ClassWork extends Model
     
     protected $fillable = 
     [
-        'subject_id',
         'class_work_title',
+        'class_section_id',
         'assessment_type_id',
-        'instructor_id',
         'total_items',
         'due_date',
     ];
@@ -35,23 +32,15 @@ class ClassWork extends Model
         'total_items' => 'integer',
     ];
 
-    // Relationship with the Subject model
-    public function subject()
+    public function classSection()
     {
-        return $this->belongsTo(Subject::class, 'subject_id');
+        return $this->belongsTo(ClassSection::class, 'class_section_id');
     }
 
     // Relationship with the AssessmentType model
     public function assessmentType()
     {
         return $this->belongsTo(AssessmentType::class, 'assessment_type_id');
-    }
-
-    // Relationship with the User model, filtered by user_role_id (3 - Instructor)
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'instructor_id')
-                    ->where('user_role_id', 3); // Only fetch users with user_role_id 3 (Instructor)
     }
 
     // Relationship with StudentClassWork

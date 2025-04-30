@@ -47,6 +47,19 @@
             </select>
         </div>
 
+        <!-- Department Dropdown -->
+        <div id="department-container" style="display: none;">
+            <x-input-label for="department_id" :value="__('Department')" />
+            <select name="department_id" id="department_id">
+                <option value="" disabled selected>Select A Department</option>
+
+                @foreach (App\Models\Department::all() as $dept)
+                    <option value="{{ $dept->department_id }}">{{ $dept->department_name }}</option>
+            @endforeach
+
+            </select>
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
@@ -87,4 +100,25 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('user_role_id');
+            const departmentContainer = document.getElementById('department-container');
+    
+            function toggleDepartmentDropdown() {
+                const selectedRole = parseInt(roleSelect.value);
+                if (selectedRole === 3 || selectedRole === 4) {
+                    departmentContainer.style.display = 'block';
+                } else {
+                    departmentContainer.style.display = 'none';
+                }
+            }
+    
+            // Trigger on load and change
+            roleSelect.addEventListener('change', toggleDepartmentDropdown);
+            toggleDepartmentDropdown(); // in case of old value on page load
+        });
+    </script>
+    
 </x-guest-layout>

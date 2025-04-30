@@ -13,7 +13,7 @@ class GradingPeriodSeeder extends Seeder
      */
     public function run(): void
     {
-        $gradingPeriods = ['First Term', 'Second Term', 'Midterm', 'Finals'];
+        $gradingPeriods = ['Prelim', 'Midterm', 'Prefinal', 'Finals'];
 
         foreach ($gradingPeriods as $period) {
             GradingPeriod::firstOrCreate(['grading_period_name' => $period]);

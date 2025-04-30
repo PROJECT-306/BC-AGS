@@ -4,8 +4,7 @@ namespace Database\Factories;
 
 use App\Models\
 {
-    Subject,
-    User,
+    ClassSection,
     AssessmentType,
     ClassWork,
 };
@@ -31,16 +30,11 @@ class ClassWorkFactory extends Factory
             return [];
         }
 
-        // Get a random instructor (user with Instructor role)
-        $instructor = User::whereHas('roles', function($query) {
-            $query->where('role_name', 'Instructor');
-        })->inRandomOrder()->first();
-
         return [
-            'subject_id' => Subject::inRandomOrder()->first()?->id ?? Subject::factory(),
-            'instructor_id' => $instructor?->id ?? User::factory(),
-            'assessment_type_id' => AssessmentType::inRandomOrder()->first()?->id,
-            'total_items' => $this->faker->numberBetween(5, 50),
+            'class_work_title' => $this->faker->sentence(3),
+            'class_section_id' => ClassSection::inRandomOrder()->first()?->class_section_id ?? ClassSection::factory(),
+            'assessment_type_id' => AssessmentType::inRandomOrder()->first()?->assessment_type_id ?? AssessmentType::factory(),
+            'total_items' => $this->faker->numberBetween(5, 100),
             'due_date' => $this->faker->optional()->date(),
         ];
     }

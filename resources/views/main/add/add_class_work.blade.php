@@ -15,12 +15,12 @@
                         @csrf
 
                         <div class="mb-4">
-                            <label class="text-white" for="subject_id">Subject</label>
-                            <select name="subject_id" id="subject_id" class="w-full p-2 rounded" required>
-                                <option value="" disabled selected>Select a subject</option>
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->subject_id }}">
-                                        {{ $subject->subject_name }}
+                            <label class="text-white" for="class_section_id">Class Section</label>
+                            <select name="class_section_id" id="class_section_id" class="w-full p-2 rounded" required>
+                                <option value="" disabled selected>Select a class section</option>
+                                @foreach ($classSections as $section)
+                                    <option value="{{ $section->class_section_id }}">
+                                        {{ $section->class_section_name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -38,18 +38,6 @@
                                 @foreach ($assessmentTypes as $type)
                                     <option value="{{ $type->assessment_type_id }}">
                                         {{ $type->assessment_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="text-white" for="instructor_id">Instructor</label>
-                            <select name="instructor_id" id="instructor_id" class="w-full p-2 rounded" required>
-                                <option value="" disabled selected>Select an instructor</option>
-                                @foreach ($instructors as $instructor)
-                                    <option value="{{ $instructor->id }}">
-                                        {{ $instructor->first_name }} {{ $instructor->last_name }}
                                     </option>
                                 @endforeach
                             </select>

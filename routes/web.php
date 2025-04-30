@@ -21,6 +21,12 @@ use App\Http\Controllers\
     UserController,
     UserRoleController,
 };
+
+use App\Http\Controllers\GradingSystem\
+{
+    GradingSystemClassSectionController
+};
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +44,18 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Class Section Custom Routes
+    Route::get('class-sections/select-section', [ClassSectionController::class, 'redirectToClassSection'])
+        ->name('class-sections.redirectToClassSection');
+
+    Route::get('class-sections/options', [ClassSectionController::class, 'redirectToClassSectionOptions'])
+        ->name('class-sections.redirectToClassSectionOptions');
+
+    //Final Grade
+    Route::get('final-grades/view', [FinalGradeController::class, 'view'])
+        ->name('final-grades.view');
+
+        
     //Update accordingly when adding a new table
     //Route::resources automatically assigns the commands(index, create, store, show, edit, update, and destroy)
     Route::resources(

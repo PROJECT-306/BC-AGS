@@ -17,6 +17,7 @@ class ClassSection extends Model
         'class_section_name',
         'user_id',
         'academic_year_id',
+        'subject_id',
     ];
 
     public function user()
@@ -27,5 +28,10 @@ class ClassSection extends Model
     public function academicYear()
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 }

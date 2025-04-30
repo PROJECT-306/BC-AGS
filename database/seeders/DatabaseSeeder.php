@@ -140,5 +140,13 @@ class DatabaseSeeder extends Seeder
         } catch (\Exception $e) {
             echo "Fixed users already exist, continuing...\n";
         }
+
+        //Class Section
+        try {
+            $this->call(ClassSectionSeeder::class);
+            echo "Class sections seeded successfully\n";
+        } catch (\Exception $e) {
+            echo "Class sections already exist, continuing...\n";
+        }
     }
 }
