@@ -25,51 +25,169 @@ class FinalGradeController extends Controller
 
     public function index()
     {
-        $finalGrades = FinalGrade::all();
+        $finalGrades = FinalGrade::with(['student', 'subject', 'semester'])->get();
+        
+        return view('main.add.list_final_grades', compact('finalGrades'));
+    }
+
+    public function create()
+    {
         $students = Student::all();
         $subjects = Subject::all();
         $semesters = Semester::all();
 
-        return view('main.add.add_final_grade', compact('finalGrades', 'students', 'subjects', 'semesters'));
+        return view('main.add.add_final_grade', compact('students', 'subjects', 'semesters'));
+    }
+
+    public function view()
+    {
+        $finalGrades = FinalGrade::with(['student', 'subject', 'semester'])
+            ->whereHas('student')
+            ->whereHas('subject')
+            ->whereHas('semester')
+            ->get();
+        
+        return view('main.add.list_final_grades', compact('finalGrades'));
+    }
+
+    public function calculate(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,student_id',
+            'subject_id' => 'required|exists:subjects,subject_id',
+            'semester_id' => 'required|exists:semesters,semester_id',
+        ]);
+
+        try {
+            // Create or update the final grade
+            $finalGrade = FinalGrade::firstOrCreate([
+                'student_id' => $request->student_id,
+                'subject_id' => $request->subject_id,
+            ]);
+
+            // Calculate the final grade automatically
+            $finalGrade->calculateFinalGrade();
+            $finalGrade->save();
+
+            // Update the final grade in the student class record for the Final period
+            $gradingPeriods = GradingPeriod::all();
+            $finalPeriod = $gradingPeriods->where('grading_period_name', 'Final')->first();
+            if ($finalPeriod) {
+                StudentClassRecord::updateOrCreate(
+                    [
+                        'student_id' => $request->student_id,
+                        'subject_id' => $request->subject_id,
+                        'grading_period_id' => $finalPeriod->grading_period_id,
+                    ],
+                    [
+                        'quizzes' => 0,
+                        'ocr' => 0,
+                        'exams' => 0,
+                        'computed_grade' => $finalGrade->final_grade,
+                    ]
+                );
+            }
+
+            return redirect()->route('final-grades.view')
+                ->with('success', 'Final grade calculated and stored successfully');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error calculating final grade: ' . $e->getMessage());
+        }
+    }
+
+    public function getGrades(Request $request)
+    {
+        $studentId = $request->student_id;
+        $subjectId = $request->subject_id;
+        $semesterId = $request->semester_id;
+
+        $requiredPeriods = ['Prelim', 'Midterm', 'Prefinal', 'Final'];
+        $grades = [];
+
+        // Get all grading periods
+        $gradingPeriods = \App\Models\GradingPeriod::all();
+
+        foreach ($requiredPeriods as $periodName) {
+            $period = $gradingPeriods->where('grading_period_name', $periodName)->first();
+            if ($period) {
+                $record = \App\Models\StudentClassRecord::where('student_id', $studentId)
+                    ->where('subject_id', $subjectId)
+                    ->where('grading_period_id', $period->grading_period_id)
+                    ->first();
+
+                $grades[strtolower($periodName)] = $record ? $record->computed_grade : '';
+            }
+        }
+
+        return response()->json($grades);
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'student_id' => 'required|exists:students,student_id',
-            'subject_id' => 'required|exists:subjects,id',
-            'semester_id' => 'required|exists:semesters,id',
+            'subject_id' => 'required|exists:subjects,subject_id',
+            'semester_id' => 'required|exists:semesters,semester_id',
         ]);
 
         try {
-            // Get the student's record for this semester
-            $record = StudentClassRecord::where('student_id', $request->student_id)
-                ->where('subject_id', $request->subject_id)
-                ->whereHas('gradingPeriod', function($query) use ($request) {
-                    $query->where('semester_id', $request->semester_id);
-                })
-                ->first();
+            // Create or update the final grade
+            $finalGrade = FinalGrade::firstOrCreate([
+                'student_id' => $request->student_id,
+                'subject_id' => $request->subject_id,
+            ]);
 
-            if (!$record) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'No record found for this student and semester');
+            // Calculate the final grade automatically
+            $finalGrade->calculateFinalGrade();
+            $finalGrade->save();
+
+            // Update the final grade in the student class record for the Final period
+            $gradingPeriods = GradingPeriod::all();
+            $finalPeriod = $gradingPeriods->where('grading_period_name', 'Final')->first();
+            if ($finalPeriod) {
+                StudentClassRecord::updateOrCreate(
+                    [
+                        'student_id' => $request->student_id,
+                        'subject_id' => $request->subject_id,
+                        'grading_period_id' => $finalPeriod->grading_period_id,
+                    ],
+                    [
+                        'quizzes' => 0,
+                        'ocr' => 0,
+                        'exams' => 0,
+                        'computed_grade' => $finalGrade->grade,
+                    ]
+                );
             }
 
-            // Do not insert into FinalGrade; just confirm the record exists and return success
             return redirect()->route('final-grades.index')
-                ->with('success', 'Student class record found. No final grade inserted, as computed grade is already stored.');
+                ->with('success', 'Final grade calculated and stored successfully');
 
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Error creating final grade: ' . $e->getMessage());
+                ->with('error', 'Error calculating final grade: ' . $e->getMessage());
         }
     }
 
     public function show($id)
     {
         return response()->json(FinalGrade::findOrFail($id));
+    }
+
+    public function getFinalGrade(Request $request)
+    {
+        $studentId = $request->student_id;
+        $subjectId = $request->subject_id;
+
+        $finalGrade = FinalGrade::where('student_id', $studentId)
+            ->where('subject_id', $subjectId)
+            ->first();
+
+        return response()->json([
+            'final_grade' => $finalGrade ? $finalGrade->final_grade : null
+        ]);
     }
 
     public function update(Request $request, $id)

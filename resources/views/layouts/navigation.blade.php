@@ -50,8 +50,8 @@
                             {{ __('Department') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link href="{{ route('final-grades.index') }}">
-                            {{ __('Final Grade (WIP)') }}
+                        <x-dropdown-link href="{{ route('final-grades.view') }}">
+                            {{ __('Final Grades') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link href="{{ route('grading-periods.index') }}">
