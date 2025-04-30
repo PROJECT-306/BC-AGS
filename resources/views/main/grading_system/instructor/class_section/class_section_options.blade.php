@@ -19,14 +19,14 @@
 
                         <!-- Student Grades Card -->
                         <!-- Student Grades Card -->
-                        <a href="#" class="block">                      
+                        <a href="{{ url('class-sections/student-grade') . '?class_section_id=' . $classSection->class_section_id . '&subject_id=' . $subject->subject_id }}" class="block">                      
                         <div class="bg-blue-600 text-white p-6 rounded-lg shadow-md hover:bg-blue-500 transition">
                             <h4 class="text-2xl font-semibold">Student Grades</h4>
                         </div>
                         </a>
 
                         <!-- Student Records Card -->
-                        <a href="#" class="block">
+                        <a href="{{ url('class-sections/student-scores') . '?class_section_id=' . $classSection->class_section_id . '&subject_id=' . $subject->subject_id }}" class="block">
                             <div class="bg-green-600 text-white p-6 rounded-lg shadow-md hover:bg-green-500 transition">
                                 <h4 class="text-2xl font-semibold">Student Records</h4>
                             </div>

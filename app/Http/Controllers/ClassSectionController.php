@@ -17,6 +17,7 @@ use App\Models\GradingSystem\
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 //Modify the class records with the current changes
 class ClassSectionController extends Controller
@@ -72,8 +73,20 @@ class ClassSectionController extends Controller
         $classSection = ClassSection::findOrFail($request->query("class_section_id"));
         $subject = Subject::findOrFail($request->query("subject_id"));
 
-        return view("main.grading_system.instructor.class_section.class_record", compact("classSection", "subject"));
+        return view("main.grading_system.instructor.class_record.class_record", compact("classSection", "subject"));
     }
+
+    public function redirectToClassScores(Request $request)
+    {
+        // Check if class section and subject are found
+        $classSection = ClassSection::findOrFail($request->query("class_section_id"));
+        $subject = Subject::findOrFail($request->query("subject_id"));
+
+    
+        // Return the view with grades, class section, and subject
+        return view("main.grading_system.instructor.class_record.class_activity_record", compact("classSection", "subject"));
+    }
+    
 
     /**
      * Show the form for creating a new resource.

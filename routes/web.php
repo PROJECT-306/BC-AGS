@@ -51,11 +51,17 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
     Route::get('class-sections/options', [ClassSectionController::class, 'redirectToClassSectionOptions'])
         ->name('class-sections.redirectToClassSectionOptions');
 
+    Route::get('class-sections/student-grade', [ClassSectionController::class, 'redirectToClassRecord'])
+        ->name('class-sections.redirectToClassRecord');
+
+        Route::get('class-sections/student-scores', [ClassSectionController::class, 'redirectToClassScores'])
+        ->name('class-sections.redirectToClassScores');
+
     //Final Grade
     Route::get('final-grades/view', [FinalGradeController::class, 'view'])
         ->name('final-grades.view');
 
-        
+
     //Update accordingly when adding a new table
     //Route::resources automatically assigns the commands(index, create, store, show, edit, update, and destroy)
     Route::resources(
