@@ -55,13 +55,25 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function () {
         "subjects"             => SubjectController::class,
         "users"                => UserController::class,
         "user-roles"           => UserRoleController::class,
+        "instructor"           => InstructorController::class,
     ]);
 
     // Custom route for fetching student scores
     Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
 
-    // Route for managing chairperson
-    Route::get('/chairperson', [InstructorController::class, 'index'])->name('manage.chairperson');
+    // Route for managing instructors
+    //Route::get('/chairperson', [InstructorController::class, 'index'])->name('manage.chairperson');
+
+    // Route for Assign Subjects to Instructors page
+    Route::get('/assign-subjects', function () {
+        return view('chairperson.assign_subject');
+    })->name('assign.subjects');
+
+    Route::get('/view-grades', function () {
+        return view('view_grades'); // Blade file name
+    })->name('view.grades');
+    
+
 });
 
 require __DIR__.'/auth.php';

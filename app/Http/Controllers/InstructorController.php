@@ -8,6 +8,6 @@ class InstructorController extends Controller
 {
     public function index()
     {
-        return view('chairperson.manage');
+        return view("chairperson.manage");
     }
 }

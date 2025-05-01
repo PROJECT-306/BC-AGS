@@ -8,7 +8,7 @@
             Edit
         </button>
 
-        <!-- Edit Department Modal -->
+        <!-- Edit Grading Period Modal -->
         <div 
             x-show="editModalOpen === {{ $department->department_id }}" 
             x-cloak 
