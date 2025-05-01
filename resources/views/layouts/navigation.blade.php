@@ -107,7 +107,7 @@
                             {{ __('Make A Class Record') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link href="#">
+                        <x-dropdown-link href="{{ route('student-grades.index')}}">
                             {{ __('Grade Students') }}
                         </x-dropdown-link>
                     </div>

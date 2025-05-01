@@ -8,6 +8,7 @@ use App\Models\
     AcademicYear,
     User,
     Subject,
+    StudentGrades,
 };
 
 use App\Models\GradingSystem\
@@ -70,10 +71,12 @@ class ClassSectionController extends Controller
 
     public function redirectToClassRecord(Request $request)
     {
+        $grades = (new StudentGrades)->finalGrades();
+
         $classSection = ClassSection::findOrFail($request->query("class_section_id"));
         $subject = Subject::findOrFail($request->query("subject_id"));
 
-        return view("main.grading_system.instructor.class_record.class_record", compact("classSection", "subject"));
+        return view("main.grading_system.instructor.class_record.class_record", compact("classSection", "subject", "grades"));
     }
 
     public function redirectToClassScores(Request $request)

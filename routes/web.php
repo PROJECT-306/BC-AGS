@@ -20,6 +20,7 @@ use App\Http\Controllers\
     SubjectController,
     UserController,
     UserRoleController,
+    StudentGradesController,
 };
 
 use App\Http\Controllers\GradingSystem\
@@ -82,6 +83,7 @@ Route::middleware(["auth", "verified", "throttle:60,1"])->group(function ()
             "subjects"             => SubjectController::class,
             "users"                => UserController::class,
             "user-roles"           => UserRoleController::class,
+            "student-grades"        => StudentGradesController::class,
         ]
     );
 
