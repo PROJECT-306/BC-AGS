@@ -1,43 +1,55 @@
-@extends('layouts.app')
+<!-- Edit Department Modal -->
+<div x-data="{ editModalOpen: null }">
 
-@section('content')
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Department
-        </h2>
-    </x-slot>
+    <!-- Edit Button Trigger (Place this inside a list or table of departments) -->
+    <button 
+        @click="editModalOpen = {{ $departments->department_id }}" 
+        class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded text-sm"
+    >
+        Edit
+    </button>
+    <div 
+        x-show="editModalOpen === {{ $departments->department_id }}" 
+        x-cloak 
+        class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+        <div 
+            @click.away="editModalOpen = null" 
+            class="bg-white w-full max-w-md p-6 rounded-lg shadow-lg"
+        >
+            <h3 class="text-lg font-semibold mb-4">Edit Department</h3>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-black overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-black border-b border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 text-white">Edit Department</h3>
-
-                    @if ($errors->any())
-                        <div class="bg-red-500 text-white p-3 rounded mb-4">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('departments.update', $departments->department_id) }}">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-4">
-                            <label class="text-white">Department Name</label>
-                            <input type="text" name="department_name" value="{{ old('department_name', $departments->department_name) }}" class="w-full p-2 rounded" required>
-                        </div>
-
-                        <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">
-                            Update Department
-                        </button>
-                    </form>
+            @if ($errors->any())
+                <div class="bg-red-500 text-white p-3 rounded mb-4">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-            </div>
+            @endif
+
+            <form method="POST" action="{{ route('departments.update', $departments->department_id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-4">
+                    <label class="block text-gray-900 text-sm font-bold mb-2">Department Name</label>
+                    <input type="text" name="department_name" value="{{ old('department_name', $departments->department_name) }}" required
+                           class="w-full px-4 py-2 rounded-md bg-white text-black border border-gray-500">
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" @click="editModalOpen = null"
+                            class="bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-600">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">
+                        Update
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-@endsection
+</div>

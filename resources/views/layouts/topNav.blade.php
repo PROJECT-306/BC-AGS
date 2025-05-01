@@ -1,4 +1,4 @@
-<nav x-data="{ open: false, viewOpen: false, mobileOpen: false }" class="fixed top-0 left-64 w-[calc(100%-16rem)] bg-[#023336] shadow z-20">
+<nav x-data="{ open: false, viewOpen: false, mobileOpen: false }" class="bg-[#023336] shadow z-20">
     <div class="w-full mx-auto px-2 sm:px-6 lg:px-8">
         <div class="relative flex items-center justify-between h-16">
             <!-- Mobile Menu Button -->
