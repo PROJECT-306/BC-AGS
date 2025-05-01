@@ -14,7 +14,7 @@ class StudentController extends Controller
 {
     public function __construct()
     {
-        $allowedRoles = [1, 3, 4, 5];
+        $allowedRoles = [1, 3, 4, 5]; // SuperAdmin, Instructor, Chairperson, and Dean
 
         if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
         {

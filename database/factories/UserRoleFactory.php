@@ -21,8 +21,14 @@ class UserRoleFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_role_number' => $this->faker->randomNumber(4),
-            'user_role_name' => $this->faker->randomElement(['Super Admin', 'Admin', 'Instructor', 'Dean', 'Chairperson']),
+            'user_role_number' => 'ROLE-' . str_pad($this->sequence(1, 2, 3, 4, 5), 3, '0', STR_PAD_LEFT),
+            'user_role_name' => $this->sequence(
+                'SuperAdmin',
+                'Admin',
+                'Instructor',
+                'Chairperson',
+                'Dean'
+            ),
         ];
-    }
+    }   
 }
