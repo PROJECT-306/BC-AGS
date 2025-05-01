@@ -1,8 +1,6 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
-import 'datatables.net-dt';
-import 'datatables.net-dt/css/jquery.dataTables.css';
 import $ from 'jquery';
 
 window.Alpine = Alpine;
