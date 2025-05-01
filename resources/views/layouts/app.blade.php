@@ -15,7 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
 </head>
-<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 h-screen">
+<body class="font-sans antialiased bg-[#C1E6BA] dark:bg-gray-900 h-screen">
     <div class="flex h-screen">
         <!-- Sidebar full height -->
         <aside class="w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col">

@@ -1,13 +1,28 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Dean Dashboard</h1>
-    <p class="text-gray-600 dark:text-gray-300">Monitor academic performance and department reports.</p>
+@section('title', 'Dean Dashboard')
 
-    <ul class="mt-4 space-y-2">
-        <li><a href="{{ route('dean.view-grades') }}" class="text-blue-600 hover:underline">View Grades</a></li>
-        <li><a href="{{ route('dean.reports') }}" class="text-blue-600 hover:underline">Reports & Analytics</a></li>
-    </ul>
-</div>
+@section('content')
+    <h2 class="font-bold text-[#023336] mb-6 text-sm">Dashboard</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6 flex items-center gap-6 cursor-pointer hover:shadow-lg transition-shadow">
+            <div class="bg-[#4da674] rounded-md p-4 text-white">
+                <i class="fas fa-user-graduate text-4xl"></i>
+            </div>
+            <div>
+                <div class="text-[#4da674] text-4xl font-bold">500</div>
+                <div class="text-[#023336] font-semibold text-lg">Total Students</div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 flex items-center gap-6 cursor-pointer hover:shadow-lg transition-shadow">
+            <div class="bg-[#4da674] rounded-md p-4 text-white">
+                <i class="fas fa-chalkboard-teacher text-4xl"></i>
+            </div>
+            <div>
+                <div class="text-[#4da674] text-4xl font-bold">20</div>
+                <div class="text-[#023336] font-semibold text-lg">Total Instructors</div>
+            </div>
+        </div>
+    </div>
 @endsection

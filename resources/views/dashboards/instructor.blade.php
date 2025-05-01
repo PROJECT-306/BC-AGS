@@ -1,15 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Instructor Dashboard</h1>
-    <p class="text-gray-600 dark:text-gray-300">Manage your classes, students, and submit grades.</p>
+@extends('layouts.app')
 
-    <ul class="mt-4 space-y-2">
-        <li><a href="{{ route('instructor.manage-students') }}" class="text-blue-600 hover:underline">Manage Students</a></li>
-        <li><a href="{{ route('instructor.manage-grades') }}" class="text-blue-600 hover:underline">Manage Grades</a></li>
-        <li><a href="{{ route('instructor.view-grades') }}" class="text-blue-600 hover:underline">View Grades</a></li>
-        <li><a href="{{ route('instructor.reports') }}" class="text-blue-600 hover:underline">Reports & Analytics</a></li>
-    </ul>
-</div>
+@section('content')
+    <h2 class="font-bold text-[#023336] mb-6 text-sm">Dashboard</h2>
+
+    <div id="cardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl">
+        <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center gap-4">
+            <i class="fas fa-book-open text-[#4da674] text-5xl"></i>
+            <div class="text-[#4da674] text-4xl font-bold">5</div>
+            <div class="font-semibold text-[#023336] text-center">Total Number of Subjects Handled</div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center gap-4">
+            <i class="fas fa-user-graduate text-[#4da674] text-5xl"></i>
+            <div class="text-[#4da674] text-4xl font-bold">60</div>
+            <div class="font-semibold text-[#023336] text-center">Total Students</div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center gap-4">
+            <i class="fas fa-check-circle text-[#4da674] text-5xl"></i>
+            <div class="text-[#4da674] text-4xl font-bold">Submitted</div>
+            <div class="font-semibold text-[#023336] text-center">Grade Status</div>
+        </div>
+    </div>
 @endsection
+
