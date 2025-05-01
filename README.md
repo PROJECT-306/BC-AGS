@@ -63,3 +63,13 @@
   - Fixed null relationship handling in final grades view
   - Added semester_id to final_grades table for better organization
   - Added proper error handling and display for missing relationships
+
+## May 2, 2025
+(Bogart)
+- Enhanced Security Features
+  - Implemented API rate limiting (100 requests per minute)
+  - Added security headers middleware for enhanced protection
+  - Implemented CSRF token protection for API requests
+  - Updated role-based access control system
+  - Removed student role and added Chairperson and Dean roles
+  - Improved error handling and user feedback for unauthorized access
