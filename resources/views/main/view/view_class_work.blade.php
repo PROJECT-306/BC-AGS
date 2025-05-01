@@ -88,60 +88,34 @@
                         </thead>
                         <tbody>
                             @foreach ($classWorks as $classWork)
-                                <tr class="hover:bg-gray-100 transition">
-                                    <td class="px-6 py-4">{{ $classWork->class_work_id }}</td>
-                                    <td class="px-6 py-4">{{ $classWork->class_work_title }}</td>
-                                    <td class="px-6 py-4">{{ $classWork->subject->subject_name }}</td>
-                                    <td class="px-6 py-4">{{ $classWork->user->first_name }}, {{ $classWork->user->last_name }}</td>
-                                    <td class="px-6 py-4">{{ $classWork->total_items }}</td>
-                                    <td class="px-6 py-4">
-                                        {{ $classWork->due_date ? \Carbon\Carbon::parse($classWork->due_date)->format('F d, Y') : 'Not Set' }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex space-x-2">
-                                            <button @click="editModal = {{ $classWork->class_work_id }}" class="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 rounded">Edit</button>
-
-                                            <form method="POST" action="{{ route('class-works.destroy', $classWork->class_work_id) }}" onsubmit="return confirm('Are you sure you want to delete this class work?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Delete</button>
-                                            </form>
-                                        </div>
-
-                                        <!-- Edit Modal -->
-                                        <div x-show="editModal === {{ $classWork->class_work_id }}" x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-                                            <div @click.away="editModal = null" class="bg-white w-full max-w-xl p-6 rounded-lg shadow-lg">
-                                                <h3 class="text-lg font-semibold mb-3">Edit Class Work</h3>
-                                                <form method="POST" action="{{ route('class-works.update', $classWork->class_work_id) }}">
-                                                    @csrf
-                                                    @method('PUT')
-
-                                                    <div class="mb-4">
-                                                        <label class="block text-gray-900 text-sm font-bold mb-2">Title</label>
-                                                        <input type="text" name="class_work_title" value="{{ $classWork->class_work_title }}" required class="w-full px-4 py-2 rounded-md border border-gray-500">
-                                                    </div>
-
-                                                    <div class="mb-4">
-                                                        <label class="block text-gray-900 text-sm font-bold mb-2">Total Items</label>
-                                                        <input type="number" name="total_items" value="{{ $classWork->total_items }}" required class="w-full px-4 py-2 rounded-md border border-gray-500">
-                                                    </div>
-
-                                                    <div class="mb-4">
-                                                        <label class="block text-gray-900 text-sm font-bold mb-2">Due Date</label>
-                                                        <input type="date" name="due_date" value="{{ $classWork->due_date }}" required class="w-full px-4 py-2 rounded-md border border-gray-500">
-                                                    </div>
-
-                                                    <div class="flex justify-end space-x-2">
-                                                        <button type="button" @click="editModal = null" class="bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-600">Cancel</button>
-                                                        <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">Update</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            @endforeach
+                            <tr class="hover:bg-gray-100 transition-colors">
+                                <td class="px-6 py-4">{{ $classWork->class_work_id }}</td>
+                                <td class="px-6 py-4">{{ $classWork->class_work_title }}</td>
+                                <td class="px-6 py-4">{{ $classWork->subject?->subject_name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">
+                                    {{ $classWork->user ? $classWork->user->first_name . ', ' . $classWork->user->last_name : 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4">{{ $classWork->total_items }}</td>
+                                <td class="px-6 py-4">
+                                    @if($classWork->due_date)
+                                        {{ \Carbon\Carbon::parse($classWork->due_date)->format('F d, Y') }}
+                                    @else
+                                        Not Set
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="{{ route('class-works.edit', $classWork->class_work_id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                    <form method="POST" action="{{ route('class-works.destroy', $classWork->class_work_id) }}" 
+                                        onsubmit="return confirm('Are you sure you want to delete this class work? This action cannot be undone.');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-700">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach                        
                         </tbody>
                     </table>
                 </div>

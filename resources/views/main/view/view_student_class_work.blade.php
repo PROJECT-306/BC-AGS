@@ -23,22 +23,27 @@
             </thead>
             <tbody>
                 @foreach($studentClassWork as $record)
-                    <tr>
-                        <td class="px-4 py-2">{{ $record->student->first_name }} {{ $record->student->last_name }}</td>
-                        <td class="px-4 py-2">{{ $record->classWork->class_work_title }} ({{ $record->classWork->subject->subject_name }})</td>
-                        <td class="px-4 py-2">{{ $record->raw_score }}</td>
-                        <td class="px-4 py-2">{{ $record->total_items }}</td>
-                        <td class="px-4 py-2 font-semibold">{{ number_format($record->computed_score, 2) }}</td>
-                        <td class="px-4 py-2 flex gap-2">
-                            <a href="#" class="text-blue-400 hover:underline text-sm">Edit</a>
-                            <form action="{{ route('student-class-works.destroy', $record->student_class_work_id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-400 hover:underline text-sm">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td class="px-4 py-2">
+                        {{ $record->student?->first_name }} {{ $record->student?->last_name ?? 'N/A' }}
+                    </td>
+                    <td class="px-4 py-2">
+                        {{ $record->classWork?->class_work_title ?? 'N/A' }} 
+                        ({{ $record->classWork?->subject?->subject_name ?? 'N/A' }})
+                    </td>
+                    <td class="px-4 py-2">{{ $record->raw_score }}</td>
+                    <td class="px-4 py-2">{{ $record->total_items }}</td>
+                    <td class="px-4 py-2 font-semibold">{{ number_format($record->computed_score, 2) }}</td>
+                    <td class="px-4 py-2 flex gap-2">
+                        <a href="#" class="text-blue-400 hover:underline text-sm">Edit</a>
+                        <form action="{{ route('student-class-works.destroy', $record->student_class_work_id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-400 hover:underline text-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach            
             </tbody>
         </table>
     @endif
