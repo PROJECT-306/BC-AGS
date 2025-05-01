@@ -21,7 +21,7 @@ class FinalGradeController extends Controller
 
         return view('main.add.add_final_grade', compact('finalGrades', 'students', 'subjects', 'semesters'));
     }
-
+ 
     public function store(Request $request)
     {
         $request->validate([
