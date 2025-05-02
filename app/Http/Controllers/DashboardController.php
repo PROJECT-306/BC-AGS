@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-=======
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Subject;
->>>>>>> origin/kyle-policies
 
 class DashboardController extends Controller
 {
     public function index()
     {
-<<<<<<< HEAD
         $user = Auth::user();
         
         // Check if user is authenticated
@@ -47,15 +43,6 @@ class DashboardController extends Controller
             abort(403, 'Invalid user role.');
         }
 
-        // Check if the dashboard view exists for this role
-        $viewPath = "dashboards.$role";
-        if (view()->exists($viewPath)) {
-            return view($viewPath);
-        }
-
-        // If view doesn't exist, show a default error
-        abort(404, 'Dashboard view not found for this role.');
-=======
         // Fetch totals for dashboard
         $totalStudents = Student::count();
         $totalInstructors = User::where('user_role_id', 'instructor')->count(); 
@@ -69,6 +56,5 @@ class DashboardController extends Controller
             'totalCourses',
             'totalSubjectsAssigned'
         ));
->>>>>>> origin/kyle-policies
     }
 }

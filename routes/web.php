@@ -33,11 +33,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-<<<<<<< HEAD
-// Role-based Dashboard View
-=======
 // Route for the dashboard
->>>>>>> origin/kyle-policies
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -49,203 +45,51 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-<<<<<<< HEAD
-    // Final grades route for SuperAdmin
-    Route::get('final-grades/view', [FinalGradeController::class, 'view'])
-        ->middleware('can:view-any,App\Models\FinalGrade')
-        ->name('final-grades.view');
-
-    // SuperAdmin routes
-    Route::middleware(['superadmin'])->group(function () {
-        Route::resources([
-            "user-roles" => UserRoleController::class,
-            "courses" => CourseController::class,
-            "departments" => DepartmentController::class,
-            "academic-years" => AcademicYearController::class,
-            "semesters" => SemesterController::class,
-        ]);
-
-
-
-        // SuperAdmin custom routes
-        Route::prefix('superadmin')->group(function () {
-            Route::view('/manage-users', 'superadmin.manage-users')->name('superadmin.manage-users');
-            Route::view('/manage-grades', 'superadmin.manage-grades')->name('superadmin.manage-grades');
-            Route::view('/settings', 'superadmin.settings')->name('superadmin.settings');
-            Route::view('/courses', 'superadmin.manage-courses')->name('superadmin.manage-courses');
-            Route::view('/academic-periods', 'superadmin.academic-periods')->name('superadmin.academic-periods');
-        });
-    });
-
-    // Admin routes
-    Route::middleware(['admin'])->group(function () {
-        Route::resources([
-            "user-roles" => UserRoleController::class,
-            "courses" => CourseController::class,
-            "departments" => DepartmentController::class,
-            "academic-years" => AcademicYearController::class,
-            "semesters" => SemesterController::class,
-        ]);
-    });
-
-    // Instructor routes
-    Route::middleware(['instructor'])->group(function () {
-        Route::resources([
-            "class-sections" => ClassSectionController::class,
-            "class-works" => ClassWorkController::class,
-            "grading-periods" => GradingPeriodController::class,
-            "student-class-records" => StudentClassRecordController::class,
-            "student-class-works" => StudentClassWorkController::class,
-            "student-grades" => StudentGradesController::class,
-        ]);
-
-        // Instructor custom routes
-        Route::prefix('instructor')->group(function () {
-            Route::view('/students', 'instructor.manage-students')->name('instructor.manage-students');
-            Route::view('/grades', 'instructor.manage-grades')->name('instructor.manage-grades');
-            Route::view('/view-grades', 'instructor.view-grades')->name('instructor.view-grades');
-            Route::view('/reports', 'instructor.reports')->name('instructor.reports');
-        });
-
-        // Class Section Custom Routes
-        Route::get('class-sections/select-section', [ClassSectionController::class, 'redirectToClassSection'])
-            ->name('class-sections.redirectToClassSection');
-        Route::get('class-sections/options', [ClassSectionController::class, 'redirectToClassSectionOptions'])
-            ->name('class-sections.redirectToClassSectionOptions');
-        Route::get('class-sections/student-grade', [ClassSectionController::class, 'redirectToClassRecord'])
-            ->name('class-sections.redirectToClassRecord');
-        Route::get('class-sections/student-scores', [ClassSectionController::class, 'redirectToClassScores'])
-            ->name('class-sections.redirectToClassScores');
-    });
-
-    // Chairperson routes
-    Route::middleware(['chairperson'])->group(function () {
-        Route::resources([
-            "courses" => CourseController::class,
-            "departments" => DepartmentController::class,
-            "academic-years" => AcademicYearController::class,
-            "semesters" => SemesterController::class,
-        ]);
-    });
-
-    // Dean routes
-    Route::middleware(['dean'])->group(function () {
-        Route::resources([
-            "courses" => CourseController::class,
-            "departments" => DepartmentController::class,
-            "academic-years" => AcademicYearController::class,
-            "semesters" => SemesterController::class,
-        ]);
-    });
-
-    // Additional custom route
-    Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Class Section Custom Routes
-    Route::get('class-sections/select-section', [ClassSectionController::class, 'redirectToClassSection'])
-        ->name('class-sections.redirectToClassSection');
-
-    Route::get('class-sections/options', [ClassSectionController::class, 'redirectToClassSectionOptions'])
-        ->name('class-sections.redirectToClassSectionOptions');
-
-    Route::get('class-sections/student-grade', [ClassSectionController::class, 'redirectToClassRecord'])
-        ->name('class-sections.redirectToClassRecord');
-
-
-    // RESTful Resources
-    Route::resources([
-        "assessment-types"       => AssessmentTypeController::class,
-        "academic-years"         => AcademicYearController::class,
-        "class-sections"         => ClassSectionController::class,
-        "class-works"            => ClassWorkController::class,
-        "courses"                => CourseController::class,
-        "departments"            => DepartmentController::class,
-        "grading-periods"        => GradingPeriodController::class,
-        "semesters"              => SemesterController::class,
-        "student-class-records"  => StudentClassRecordController::class,
-        "student-class-works"    => StudentClassWorkController::class,
-        "students"               => StudentController::class,
-        "student-subjects"       => StudentSubjectController::class,
-        "subjects"               => SubjectController::class,
-        "user-roles"             => UserRoleController::class,
-        "student-grades"         => StudentGradesController::class,
-    ]);
-
-    // Users route with authorization check
-    Route::get('users', function () {
-        return redirect()->route('dashboard')->with('error', 'The users page is only accessible to SuperAdmin and Admin users.');
-    })->name('users.index');
-
-    // Additional custom route
-    Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
-
-    // Role-based view routes (optional if you link from sidebar)
-    Route::prefix('superadmin')->group(function () {
-        Route::view('/manage-users', 'superadmin.manage-users')->name('superadmin.manage-users');
-        Route::view('/manage-grades', 'superadmin.manage-grades')->name('superadmin.manage-grades');
-        Route::view('/settings', 'superadmin.settings')->name('superadmin.settings');
-        Route::view('/courses', 'superadmin.manage-courses')->name('superadmin.manage-courses');
-        Route::view('/academic-periods', 'superadmin.academic-periods')->name('superadmin.academic-periods');
-    });
-
-    Route::prefix('instructor')->group(function () {
-        Route::view('/students', 'instructor.manage-students')->name('instructor.manage-students');
-        Route::view('/grades', 'instructor.manage-grades')->name('instructor.manage-grades');
-        Route::view('/view-grades', 'instructor.view-grades')->name('instructor.view-grades');
-        Route::view('/reports', 'instructor.reports')->name('instructor.reports');
-    });
-
-    Route::prefix('chairperson')->group(function () {
-        Route::view('/manage-instructors', 'chairperson.manage-instructor')->name('chairperson.manage-instructor');
-        Route::view('/assign-subjects', 'chairperson.assign-subjects')->name('chairperson.assign-subjects');
-        Route::view('/view-grades', 'chairperson.view-grades')->name('chairperson.view-grades');
-        Route::view('/reports', 'chairperson.reports')->name('chairperson.reports');
-    });
-
-    Route::prefix('dean')->group(function () {
-        Route::view('/view-grades', 'dean.view-grades')->name('dean.view-grades');
-        Route::view('/reports', 'dean.reports')->name('dean.reports');
-    });
-=======
     // Resources routes for CRUD operations on various models
     Route::resources([
         "assessment-types"     => AssessmentTypeController::class,
         "class-works"          => ClassWorkController::class,
         "courses"              => CourseController::class,
         "departments"          => DepartmentController::class,
-        "final-grades"         => FinalGradeController::class,
-        "grading-periods"      => GradingPeriodController::class,
+        "academic-years"       => AcademicYearController::class,
         "semesters"            => SemesterController::class,
         "student-class-records"=> StudentClassRecordController::class,
         "student-class-works"  => StudentClassWorkController::class,
         "students"             => StudentController::class,
         "student-subjects"     => StudentSubjectController::class,
         "subjects"             => SubjectController::class,
-        "users"                => UserController::class,
         "user-roles"           => UserRoleController::class,
-        "instructor"           => InstructorController::class,
+        "student-grades"       => StudentGradesController::class,
+        "class-sections"       => ClassSectionController::class,
+        "grading-periods"      => GradingPeriodController::class
     ]);
 
-    // Custom route for fetching student scores
-    Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
+    // Class Sections route
+    Route::get('class-sections/redirect', [ClassSectionController::class, 'redirectToClassSection'])->name('class-sections.redirectToClassSection');
 
-    // Route for managing instructors
-    //Route::get('/chairperson', [InstructorController::class, 'index'])->name('manage.chairperson');
+    // Final Grades route
+    Route::get('final-grades/view', [FinalGradeController::class, 'view'])->name('final-grades.view');
 
-    // Route for Assign Subjects to Instructors page
-    Route::get('/assign-subjects', function () {
-        return view('chairperson.assign_subject');
-    })->name('assign.subjects');
+    // Users route with authorization check
+    Route::get('users', function () {
+        return redirect()->route('dashboard')->with('error', 'The users page is only accessible to SuperAdmin and Admin users.');
+    })->name('users.index');
 
-    Route::get('/view-grades', function () {
-        return view('view_grades'); // Blade file name
-    })->name('view.grades');
-    
+    // Instructor routes
+    Route::prefix('instructor')->name('instructor.')->group(function () {
+        Route::get('manage-students', [InstructorController::class, 'manageStudents'])->name('manage-students');
+        Route::get('manage-grades', [InstructorController::class, 'manageGrades'])->name('manage-grades');
+        Route::get('view-grades', [InstructorController::class, 'viewGrades'])->name('view-grades');
+        Route::get('reports', [InstructorController::class, 'reports'])->name('reports');
+    });
 
->>>>>>> origin/kyle-policies
+    // Chairperson routes
+    Route::prefix('chairperson')->name('chairperson.')->group(function () {
+        Route::get('manage-instructor', [InstructorController::class, 'manageInstructor'])->name('manage-instructor');
+        Route::get('assign-subjects', [InstructorController::class, 'assignSubjects'])->name('assign-subjects');
+        Route::get('view-grades', [InstructorController::class, 'viewGrades'])->name('view-grades');
+        Route::get('reports', [InstructorController::class, 'reports'])->name('reports');
+    });
 });
 
 require __DIR__.'/auth.php';
