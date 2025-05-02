@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Edit Test
@@ -11,18 +13,18 @@
                 <div class="p-6 bg-black border-b border-gray-200">
                     <h3 class="text-xl font-bold mb-4 text-white">Edit Test</h3>
 
-                    <form method="POST" action="{{  }}">
+                    <form method="POST" action="{{ route('tests.update', $test->id) }}">
                         @csrf
                         @method('PUT')
 
+                        <!-- Add form fields here as needed -->
 
                         <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">
                             Update
                         </button>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

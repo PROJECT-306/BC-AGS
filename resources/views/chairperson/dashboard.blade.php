@@ -1,12 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<<<<<<< HEAD
-    <div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Welcome to the Dashboard</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-300">Your sidebar is working!</p>
-    </div>
-=======
 <div class="flex min-h-screen bg-[#C1E6BA]">
     <main class="flex-1 p-6">
 
@@ -43,5 +37,4 @@
         </div>
     </main>
 </div>
->>>>>>> origin/kyle-policies
 @endsection

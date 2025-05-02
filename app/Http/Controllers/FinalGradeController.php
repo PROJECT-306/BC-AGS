@@ -124,7 +124,7 @@ class FinalGradeController extends Controller
 
         return response()->json($grades);
     }
-
+ 
     public function store(Request $request)
     {
         $request->validate([

@@ -20,7 +20,8 @@ use App\Http\Controllers\{
     UserController,
     UserRoleController,
     StudentGradesController,
-    DashboardController
+    DashboardController,
+    InstructorController
 };
 
 use App\Http\Controllers\GradingSystem\GradingSystemClassSectionController;
@@ -32,17 +33,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+<<<<<<< HEAD
 // Role-based Dashboard View
+=======
+// Route for the dashboard
+>>>>>>> origin/kyle-policies
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Group routes that require authentication and verification
 Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
-    // User profile routes (accessible to all authenticated users)
+    // Routes for profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+<<<<<<< HEAD
     // Final grades route for SuperAdmin
     Route::get('final-grades/view', [FinalGradeController::class, 'view'])
         ->middleware('can:view-any,App\Models\FinalGrade')
@@ -147,8 +154,6 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::get('class-sections/student-grade', [ClassSectionController::class, 'redirectToClassRecord'])
         ->name('class-sections.redirectToClassRecord');
 
-    Route::get('class-sections/student-scores', [ClassSectionController::class, 'redirectToClassScores'])
-        ->name('class-sections.redirectToClassScores');
 
     // RESTful Resources
     Route::resources([
@@ -204,6 +209,43 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
         Route::view('/view-grades', 'dean.view-grades')->name('dean.view-grades');
         Route::view('/reports', 'dean.reports')->name('dean.reports');
     });
+=======
+    // Resources routes for CRUD operations on various models
+    Route::resources([
+        "assessment-types"     => AssessmentTypeController::class,
+        "class-works"          => ClassWorkController::class,
+        "courses"              => CourseController::class,
+        "departments"          => DepartmentController::class,
+        "final-grades"         => FinalGradeController::class,
+        "grading-periods"      => GradingPeriodController::class,
+        "semesters"            => SemesterController::class,
+        "student-class-records"=> StudentClassRecordController::class,
+        "student-class-works"  => StudentClassWorkController::class,
+        "students"             => StudentController::class,
+        "student-subjects"     => StudentSubjectController::class,
+        "subjects"             => SubjectController::class,
+        "users"                => UserController::class,
+        "user-roles"           => UserRoleController::class,
+        "instructor"           => InstructorController::class,
+    ]);
+
+    // Custom route for fetching student scores
+    Route::get('/student-class-records/{student_id}/scores', [StudentClassRecordController::class, 'getStudentScores']);
+
+    // Route for managing instructors
+    //Route::get('/chairperson', [InstructorController::class, 'index'])->name('manage.chairperson');
+
+    // Route for Assign Subjects to Instructors page
+    Route::get('/assign-subjects', function () {
+        return view('chairperson.assign_subject');
+    })->name('assign.subjects');
+
+    Route::get('/view-grades', function () {
+        return view('view_grades'); // Blade file name
+    })->name('view.grades');
+    
+
+>>>>>>> origin/kyle-policies
 });
 
 require __DIR__.'/auth.php';

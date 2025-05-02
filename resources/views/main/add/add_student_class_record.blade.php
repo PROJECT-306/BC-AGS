@@ -1,10 +1,6 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            Add Student Class Record
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-black overflow-hidden shadow-sm sm:rounded-lg">
@@ -71,16 +67,14 @@
                         </div>
 
                         <script>
-                            // Initialize scores to 0 when page loads
                             document.getElementById('quizzes').value = 0;
                             document.getElementById('ocr').value = 0;
                             document.getElementById('exams').value = 0;
                             document.getElementById('final_grade').value = 0;
 
-                            // Update scores when student is selected
-                            document.getElementById('student_id').addEventListener('change', function() {
+                            document.getElementById('student_id').addEventListener('change', function () {
                                 const studentId = this.value;
-                                
+
                                 if (studentId) {
                                     fetch(`/student-class-records/${studentId}/scores`)
                                         .then(response => response.json())
@@ -90,16 +84,13 @@
                                             document.getElementById('exams').value = data.exams || 0;
                                             document.getElementById('final_grade').value = data.final_grade || 0;
                                         })
-                                        .catch(error => {
-                                            console.error('Error fetching scores:', error);
-                                            // If there's an error, keep the default values
+                                        .catch(() => {
                                             document.getElementById('quizzes').value = 0;
                                             document.getElementById('ocr').value = 0;
                                             document.getElementById('exams').value = 0;
                                             document.getElementById('final_grade').value = 0;
                                         });
                                 } else {
-                                    // If no student is selected, reset to 0
                                     document.getElementById('quizzes').value = 0;
                                     document.getElementById('ocr').value = 0;
                                     document.getElementById('exams').value = 0;
@@ -116,4 +107,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

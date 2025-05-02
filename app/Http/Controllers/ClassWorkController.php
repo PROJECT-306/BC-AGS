@@ -37,8 +37,12 @@ class ClassWorkController extends Controller
                 $query->select('assessment_type_id', 'assessment_name');
             },
         ])->get();
+        // Include these so the modal has the needed data
+        $subjects = Subject::all();
+        $assessmentTypes = AssessmentType::all();
+        $instructors = User::where('user_role_id', 3)->get(); // assuming 3 = instructor
 
-        return view("main.view.view_class_work", compact("classWorks"));
+        return view("main.view.view_class_work", compact("classWorks", "subjects", "assessmentTypes", "instructors"));
     }
 
     // Show the form to create a new class work
