@@ -71,5 +71,9 @@
   - Added security headers middleware for enhanced protection
   - Implemented CSRF token protection for API requests
   - Updated role-based access control system
+    - Restrict user management to SuperAdmin only
+    - Allow Instructors to access final grades
+    - Add specific error message for unauthorized access
+    - Update routes and policies for proper authorization
   - Removed student role and added Chairperson and Dean roles
   - Improved error handling and user feedback for unauthorized access
