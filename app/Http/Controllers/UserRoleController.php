@@ -10,12 +10,7 @@ class UserRoleController extends Controller
 {
     public function __construct()
     {
-        $allowedRoles = [1, 2];
-
-        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
-        {
-            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
-        }
+        $this->middleware('can:can-manage-users');
     }
 
     public function index()

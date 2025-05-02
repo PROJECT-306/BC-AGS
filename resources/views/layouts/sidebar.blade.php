@@ -1,6 +1,15 @@
 @php
     $user = Auth::user();
-    $role = $user->user_role?->user_role_name ?? 'Unknown';
+    $roleNumber = $user->userRole?->user_role_number;
+    
+    $role = match($roleNumber) {
+        'ROLE-001' => 'SuperAdmin',
+        'ROLE-002' => 'Admin',
+        'ROLE-003' => 'Instructor',
+        'ROLE-004' => 'Chairperson',
+        'ROLE-005' => 'Dean',
+        default => 'Unknown',
+    };
 @endphp
 
 <div class="h-full w-full flex flex-col">

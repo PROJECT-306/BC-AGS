@@ -133,7 +133,7 @@
 
                     <x-slot name="content">
                         <div class = "px-4 py-2 text-white">
-                            Role: {{auth()->user()->user_role->user_role_name}}
+                            Role: {{auth()->user()->userRole->user_role_name}}
                         </div>
 
                         <x-dropdown-link :href="route('profile.edit')">

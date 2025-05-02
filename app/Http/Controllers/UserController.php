@@ -6,24 +6,20 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $allowedRoles = [1, 2];
-
-        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
-        {
-            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
-        }
+        // Middleware is handled by route group
     }
 
     public function index()
     {
-        $user = User::all();
+        $users = User::with('userRole')->get();
 
-        return view("main.view.view_users", compact("user"));
+        return view("main.view.view_users", compact("users"));
     }
 
     public function store(Request $request)
@@ -33,7 +29,7 @@ class UserController extends Controller
             'surname' => 'required|string|max:255',
             'user_email' => 'nullable|email|unique:users,email',
             'user_password' => 'required|string|min:6',
-            'user_role' => 'required|integer|in:0,1,2,3,4',
+            'user_role' => 'required|integer|in:1,2,3,4,5', // Only valid role IDs
         ]);
 
         $user = User::create([
@@ -42,7 +38,7 @@ class UserController extends Controller
             'surname' => $request->surname,
             'user_email' => $request->user_email,
             'user_password' => Hash::make($request->user_password),
-            'user_role' => $request->user_role,
+            'user_role_id' => $request->user_role,
         ]);
 
         return response()->json($user, 201);

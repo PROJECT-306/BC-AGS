@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\
-{
+use App\Models\{
     Student,
     Course,
 };
@@ -14,16 +13,13 @@ class StudentController extends Controller
 {
     public function __construct()
     {
-        $allowedRoles = [1, 3, 4, 5]; // SuperAdmin, Instructor, Chairperson, and Dean
-
-        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
-        {
-            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
-        }
+        $this->middleware('can:can-manage-users');
     }
 
     public function index()
     {
+        $this->authorize('viewAny', Student::class);
+        
         $students = Student::with(
             [
                 "course"
@@ -35,35 +31,39 @@ class StudentController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Student::class);
+        
         $courses = Course::all();
 
         return view("main.add.add_student", compact("courses"));
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'birthdate' => 'required|date',
-        'gender' => 'required|in:Male,Female,Other',
-        'course_id' => 'required|exists:courses,course_id',
-    ]);
+    {
+        $this->authorize('create', Student::class);
 
-    $lastStudent = Student::orderBy('student_number', 'desc')->first();
-    $nextStudentNumber = $lastStudent ? $lastStudent->student_number + 1 : 1;
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'gender' => 'required|in:Male,Female,Other',
+            'course_id' => 'required|exists:courses,course_id',
+        ]);
 
-    Student::create([
-        'student_number' => $nextStudentNumber,
-        'first_name' => $request->first_name,
-        'last_name' => $request->last_name,
-        'birthdate' => $request->birthdate,
-        'gender' => $request->gender,
-        'course_id' => $request->course_id,
-    ]);
+        $lastStudent = Student::orderBy('student_number', 'desc')->first();
+        $nextStudentNumber = $lastStudent ? $lastStudent->student_number + 1 : 1;
 
-    return redirect()->route('students.index')->with('success', 'Student Added');
-}
+        Student::create([
+            'student_number' => $nextStudentNumber,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'birthdate' => $request->birthdate,
+            'gender' => $request->gender,
+            'course_id' => $request->course_id,
+        ]);
+
+        return redirect()->route('students.index')->with('success', 'Student created successfully');
+    }
 
     public function show($id)
     {

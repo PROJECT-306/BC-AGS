@@ -10,22 +10,33 @@ use App\Models\GradingPeriod;
 use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class FinalGradeController extends Controller
 {
     public function __construct()
     {
-        $allowedRoles = [1, 3, 4];
-
-        if(Auth::check() && !in_array(Auth::user()->user_role_id, $allowedRoles))
-        {
-            redirect()->route('dashboard')->with("error", "You don't have permission to access this page.")->send();
-        }
+        // Middleware is handled by route
     }
+
+
 
     public function index()
     {
         $finalGrades = FinalGrade::with(['student', 'subject', 'semester'])->get();
+        
+        return view('main.add.list_final_grades', compact('finalGrades'));
+    }
+
+    public function view()
+    {
+        $this->authorize('view-any', FinalGrade::class);
+
+        $finalGrades = FinalGrade::with(['student', 'subject', 'semester'])
+            ->whereHas('student')
+            ->whereHas('subject')
+            ->whereHas('semester')
+            ->get();
         
         return view('main.add.list_final_grades', compact('finalGrades'));
     }
@@ -39,16 +50,7 @@ class FinalGradeController extends Controller
         return view('main.add.add_final_grade', compact('students', 'subjects', 'semesters'));
     }
 
-    public function view()
-    {
-        $finalGrades = FinalGrade::with(['student', 'subject', 'semester'])
-            ->whereHas('student')
-            ->whereHas('subject')
-            ->whereHas('semester')
-            ->get();
-        
-        return view('main.add.list_final_grades', compact('finalGrades'));
-    }
+
 
     public function calculate(Request $request)
     {
